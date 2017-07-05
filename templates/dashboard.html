@@ -1,0 +1,114 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="/static/css/dashboard.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script src="/static/js/script.js"></script>
+        <script>
+            timer = setInterval(function(){window.location.reload(1);}, {{config.interval}})
+
+            $(document).ready(function(){
+                $(".dropdown").hover(function(){
+                    clearTimeout(timer);
+                }, function(){
+                    timer = setTimeout(function(){window.location.reload(1);}, {{config.interval}});
+                });
+            });
+        </script>
+    </head>
+
+    <body onload="resizePanelItems()">
+        <div class="dashboard-header">
+            <div class="header-center">
+                <p><strong>CI Dashboard</strong></p>
+                <a href="/settings"><img width="23px" src="/static/photos/setup.png"></a>
+            </div>
+        </div>
+        <div class="container">
+            {% for repo in repos %}
+                {% set child_size = 100/config.columns %}   
+                {% set base_url = 'https://travis-ci.org/' + repo.repo_slug %}     
+                <div class="child" style="width:{{child_size}}%; height:{{child_size}}%;">
+                    <div id="repo.repo_id" class="panel {{repo.last_build.state or 'none'}}">
+                        <div class="panel-head">
+                            <a name="repo-slug" target="_blank" href="{{base_url}}">{{repo.repo_slug}}</a>
+                             <div class="dropdown">
+                                <input class="dropbtn" type="image" src="/static/photos/menu.png">
+                                <div class="dropdown-content">
+                                    <div>
+                                        <form action="/dashboard" method="post"> 
+                                            
+                                            <select name="branch">
+                                                {% for branch in repo.branches %}
+                                                    <option >{{branch}}</option>
+                                                {% endfor %}
+                                            </select>
+                                            <input type='hidden' name='repo' value="{{repo.repo_id}}"/>
+                                            <button name="trigger" type="submit" class="btn-green" style='width:auto'>Trigger</button>
+                                        </form>
+                                    </div>
+                                    {% if repo.last_build.state in ['CREATED', 'STARTED'] %}
+                                    <div>
+                                        <form action="/dashboard" method="post"> 
+                                            <input type='hidden' name='buildid' value="{{repo.last_build.id}}"/>
+                                            <button name="cancel-build" class="btn-red">Cancel build</button>
+                                        </form>
+                                    </div>
+                                    {% elif repo.last_build.state in ['FAILED', 'PASSED', 'ERRORED', 'CANCELED'] %}
+                                    <div>
+                                        <form action="/dashboard" method="post">
+                                            <input type='hidden' name='buildid' value="{{repo.last_build.id}}"/>
+                                            <button name="restart-build" class="btn-blue">Restart build</button>
+                                        </form>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        {% if not repo.last_build %}
+                            <div class="panel-content">
+                                <p name="event-title" class="event-title">No builds for this repository</p>
+                            </div>
+                            <div class="panel-footer"></div>
+                        {% else %}
+                        <div class="panel-content">
+                            <p class="event-title"><strong>{{repo.last_build.event_type}}</strong> 
+                            {% if repo.last_build.event_type == 'Pull Request' %}
+                                <strong>#
+                                     <a href="https://github.com/{{repo.repo_slug}}/pull/{{repo.last_build.pull_request_number}}" target="_blank">
+                                        {{repo.last_build.pull_request_number}}
+                                    </a>
+                                </strong> 
+                                    {{repo.last_build.pull_request_title}} 
+                            {% else %}
+                                {{repo.last_build.commit_message}}
+                            {% endif %}
+                            </p>
+                            <div class="event-details">
+                                <img  src="/static/photos/branch.png">
+                                <p>{{repo.last_build.branch}} 
+                                    <a href="http://github.com/{{repo.repo_slug}}/commit/{{repo.last_build.commit_id}}" target="_blank">{{repo.last_build.commit_id}}</a></p>
+                            </div>
+                            <div class="event-details">
+                                <img src="/static/photos/author.png">
+                                <p>{{repo.last_build.commit_author}}</p>
+                            </div>
+                        </div>
+                        <div class="panel-footer">
+                            <a href="{{base_url}}/builds/{{repo.last_build.id}}" target="_blank">
+                                <strong># {{repo.last_build.number}}</strong>
+                            </a>
+
+                            {% if repo.last_build.state == 'STARTED' %}
+                                    <a>Running for {{utils.getItemAge(repo.last_build.started_at)}}</a>
+                            {% elif  repo.last_build.state != 'CREATED' %}
+                                <a>Finished {{utils.getItemAge(repo.last_build.finished_at)}}</a>
+                            {% endif %}
+                            <p ><strong>{{repo.last_build.state}}</strong></p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </body>
+</html>

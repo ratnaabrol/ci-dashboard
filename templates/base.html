@@ -1,0 +1,30 @@
+<html> 
+    <head>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+         <link rel="stylesheet" href="/static/css/common.css">
+        {% block head %}
+        {% endblock %}
+    </head>
+    <body>
+        {% block header %}
+            <div id="header">
+                <p class="logo">CI Dashboard</p>
+                <div>
+                    <a href="/dashboard">Dashboard</a>&ensp;&ensp;
+                    <a href="/settings">Settings</a>&ensp;&ensp;
+                    <a href="https://github.com/ahmedelsayed-93/ci-dashboard" target="_blank">
+                        Github
+                    </a>&ensp;&ensp;
+                </div>
+            </div>
+        {% endblock%} 
+        <div id="content">
+            {% block content %}
+            {% endblock%} 
+        </div>
+        {% block footer %}
+            <div id="footer">
+            </div>
+        {% endblock%}
+    </body>
+</html>

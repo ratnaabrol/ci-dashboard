@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <link rel="stylesheet" href="/static/css/settings.css">
+{% endblock %}
+
+{% block content %}
+<div class="settings-container">
+    <p class="page-title">Settings</p><br>
+    <form name="config-account" method="post" action="/settings">
+        <div class="section">
+            <p class="page-sub-title">Travis token</p><br>
+            <label for="token">Insert your travis api token</label><br>
+            <input type="text" name="token" value="{{config.token}}">
+        </div>
+        <div class="section">
+            <p class="page-sub-title">Github token</p><br>
+            <label for="token">Insert your Github api token</label><br>
+            <input type="text" name="github_token" value="{{config.github_token}}">
+        </div>
+        <input class="save-button" type="submit" name="config-account" value="Save">
+    </form><br><br>
+    <form name="config-dashboard" method="post" action="/settings">
+        <div class="section">
+            <p class="page-sub-title">Repositories</p><br>
+            <div style="display:inline-block">
+            {% if not repos %}
+                No repositories were found
+            {% else %}
+                {% for repo in repos %}
+                    <input type="checkbox" value="{{repo.slug}}" id="{{repo.slug}}" name="repos" {{'checked' if repo.slug in config.repos}}>
+                    <label class="repo-label" for="{{repo.slug}}">{{repo.slug}}</label>
+                {% endfor %}
+            {% endif %}
+            </div>
+        </div>
+        <div class="section">
+            <br><p class="page-sub-title">Threads</p><br>
+            <label for="columns">set number of threads</label><br>
+            <input type="number" name="threads" value="{{config.threads}}">
+        </div>
+         <div class="section">
+            <br><p class="page-sub-title">Page layout</p><br>
+            <label for="columns">set how many columns in the dashboard</label><br>
+            <input type="number" name="columns" value="{{config.columns}}">
+        </div>
+        <div class="section">
+            <br><p class="page-sub-title">Update interval</p><br>
+            <label for="interval">set update interval in miliseconds</label><br>
+            <input type="number" name="interval" value="{{config.interval}}">
+        </div>
+        <input class="save-button" name="config-dashboard" type="submit" value="Save">
+    </form>
+</div>
+{% endblock %}
