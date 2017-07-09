@@ -22,6 +22,7 @@ class Client:
             raise RuntimeError('Invalid request method')
 
         response.raise_for_status()
+        
         return response
 
     def authorize(self, token):

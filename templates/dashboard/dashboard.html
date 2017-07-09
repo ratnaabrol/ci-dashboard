@@ -6,12 +6,12 @@
 <script src="/static/js/script.js"></script>
 <script>
     window.onload = function() {resizePanelItems();};
-    timer = setInterval(function(){window.location.reload(1);}, {{config.interval}})
+    timer = setInterval(function(){window.location.reload(1);}, {{utils.config.interval}})
     $(document).ready(function(){
         $(".dropdown").hover(function(){
             clearTimeout(timer);
         }, function(){
-            timer = setTimeout(function(){window.location.reload(1);}, {{config.interval}});
+            timer = setTimeout(function(){window.location.reload(1);}, {{utils.config.interval}});
         });
     });
 </script>
@@ -21,7 +21,7 @@
 {% block content %}
 
 <div class="container">
-    {% set child_size = 100/config.columns %}
+    {% set child_size = 100/utils.config.columns %}
     {% for repo in repos %}   
         {% set base_url = 'https://travis-ci.org/' + repo.slug %}     
         <div class="child" style="width:{{child_size}}%; height:{{child_size}}%;">

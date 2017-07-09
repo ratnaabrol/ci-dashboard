@@ -1,9 +1,8 @@
-from flask import Blueprint, Flask, request, redirect, render_template, url_for, stream_with_context
+from flask import Flask, request, redirect, render_template, url_for, Response
 import argparse, json, time
 from utils import Utils
 from requests import HTTPError
 from errors import errors
-from flask import Response
 
 app = Flask(__name__)
 
@@ -12,9 +11,8 @@ utils = Utils()
 @app.route("/dashboard", methods=["GET", "POST"])
 def dashboard(): 
     if request.method == 'GET':
-        config = utils.readConfig()
         repos = utils.getDashboard()
-        return render_template("dashboard/dashboard.html", repos=repos, config=config, utils=utils)
+        return render_template("dashboard/dashboard.html", repos=repos, utils=utils)
 
     elif request.method == 'POST':
         if 'trigger' in request.form:

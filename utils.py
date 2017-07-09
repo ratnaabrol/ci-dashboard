@@ -3,7 +3,7 @@ from datetime import datetime
 from requests import HTTPError
 from travis.client import Client
 from threading import Thread
-from github import Github
+import github
 from tools import Tools
 
 class Utils:
@@ -12,6 +12,7 @@ class Utils:
         self.config_file = os.path.join(path, "config.json")
         self.config = self.readConfig()
         self.travis = Client(self.config['token'])
+        self.github = github.Github(login_or_token=self.config['github_token'])
         self.tools = Tools()
 
     def readConfig(self):
@@ -25,19 +26,22 @@ class Utils:
         
         if 'token' in kwargs:
             self.travis.authorize(kwargs['token'])
+
+        if 'github_token' in kwargs:
+            self.github = github.Github(login_or_token=kwargs['github_token'])
             
         with open(self.config_file , 'w') as f:
             json.dump(self.config, f)
 
     def repo(self, slug):
         repo = self.travis.repo(slug).json()
-        branches = self.branches(repo['id'])
+        branches = self.branches(repo)
         last_build = self.builds(repo['id'], last_build=True)
         if last_build:
             last_build = last_build[0]
             
         repo['branches'] = branches
-        repo['last_build'] = last_build or None
+        repo['last_build'] = last_build
         return repo
 
     def repos(self):
@@ -57,9 +61,15 @@ class Utils:
         builds = self.travis.builds(repoid, limit=limit)
         return builds.json()['builds']
  
-    def branches(self, repoid):
-        branches = self.travis.branches(repoid)
-        return [branch['name'] for branch in branches.json()['branches']]
+    def branches(self, repo):
+        if self.config['github_token']:
+            branches = [branch.name for branch in self.github.get_repo(repo['slug']).get_branches()]   
+        else:
+            branches = [branch['name'] for branch in self.travis.branches(repo['id']).json()['branches']]
+            if repo['default_branch']['name'] not in branches:
+                branches.append(repo['default_branch']['name'])
+        
+        return branches
     
     def actions(self, **kwargs):
         action = kwargs['action']
@@ -79,7 +89,8 @@ class Utils:
             self.travis.cancel_build(buildid=buildid)
             
         else:
-            raise RuntimeError('Invalid action')
+            raise RuntimeError('Invalid action type')
+
 
     def getDashboard(self):
         dashboard_data = []
@@ -104,7 +115,6 @@ class Utils:
 
             for thread in threads_list:
                 thread.join()
-            
             
             return sorted(dashboard_data, key=lambda k: k['slug'])
             
