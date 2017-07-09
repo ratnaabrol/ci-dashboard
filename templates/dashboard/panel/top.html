@@ -1,0 +1,34 @@
+<a name="repo-slug" target="_blank" href="{{base_url}}">{{repo.slug}}</a>
+<div class="dropdown">
+    <input class="dropbtn" type="image" src="/static/photos/menu.png">
+    <div class="dropdown-content">
+        <div>
+            <form action="/dashboard" method="post">   
+                <select name="branch">
+                    {% for branch in repo.branches %}
+                        <option >{{branch}}</option>
+                    {% endfor %}
+                </select>
+                <input type='hidden' name='repo' value="{{repo.id}}"/>
+                <button name="trigger" type="submit" class="btn-green" style='width:auto'>Trigger</button>
+            </form>
+        </div>
+        {% if repo.last_build %}
+            {% if repo.last_build.state in ['created', 'started'] %}
+            <div>
+                <form action="/dashboard" method="post"> 
+                    <input type='hidden' name='buildid' value="{{repo.last_build.id}}"/>
+                    <button name="cancel-build" class="btn-red">Cancel build</button>
+                </form>
+            </div>
+            {% elif repo.last_build.state in ['failed', 'passed', 'errored', 'canceled'] %}
+            <div>
+                <form action="/dashboard" method="post">
+                    <input type='hidden' name='buildid' value="{{repo.last_build.id}}"/>
+                    <button name="restart-build" class="btn-blue">Restart build</button>
+                </form>
+            </div>
+            {% endif %} 
+        {% endif %}    
+    </div>
+</div>

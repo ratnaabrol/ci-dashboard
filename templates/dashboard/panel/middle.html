@@ -1,0 +1,27 @@
+{% if repo.last_build %}
+    <p class="event-title"><strong>{{repo.last_build.event_type.replace('_', ' ').title()}}</strong>
+    {% if repo.last_build.event_type == 'pull_request' %}
+        <strong>#
+            <a href="https://github.com/{{repo.slug}}/pull/{{repo.last_build.pull_request_number}}" target="_blank">
+                {{repo.last_build.pull_request_number}}
+            </a>
+        </strong> 
+            {{repo.last_build.pull_request_title}} 
+    {% else %}
+        {{repo.last_build.commit.message}}
+    {% endif %}
+    </p>
+    <div class="event-details">
+        <img  src="/static/photos/branch.png">
+        <p>{{repo.last_build.branch.name}} 
+            <a href="http://github.com/{{repo.slug}}/commit/{{repo.last_build.commit.sha}}" target="_blank">{{repo.last_build.commit.sha[:7]}}</a></p>
+    </div>
+    <div class="event-details">
+        <img src="/static/photos/author.png">
+        <p>{{repo.last_build.commit.author.name}}</p>
+    </div>
+
+{% else %}
+    <p class="event-title">No builds for this repository</p>
+{% endif %}
+

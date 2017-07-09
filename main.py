@@ -1,5 +1,4 @@
 from flask import Blueprint, Flask, request, redirect, render_template, url_for, stream_with_context
-from travis_client.client import Client
 import argparse, json, time
 from utils import Utils
 from requests import HTTPError
@@ -8,65 +7,58 @@ from flask import Response
 
 app = Flask(__name__)
 
-@app.errorhandler(HTTPError)
-def ApiErrorHandeler(e):
-    status = e.response.status_code
-    if status == 403:
-        error = errors['001']
-    else:
-        error = errors['000']     
-    return render_template('error.html', error=error, details=e.args[0])
-    
+utils = Utils()
+
 @app.route("/dashboard", methods=["GET", "POST"])
 def dashboard(): 
     if request.method == 'GET':
-        config = Utils().readConfig()
-        repos = Utils().getDashboardData()
-        return render_template("dashboard.html", repos=repos, config=config, utils=Utils())
+        config = utils.readConfig()
+        repos = utils.getDashboard()
+        return render_template("dashboard/dashboard.html", repos=repos, config=config, utils=utils)
 
     elif request.method == 'POST':
         if 'trigger' in request.form:
             repoid = request.form.get('repo')
             branch = request.form.get('branch')
-            Utils().triggerBuild(repoid, branch)
+            utils.actions(action='trigger', repoid=repoid, branch=branch)
 
         elif 'restart-build' in request.form:
             buildid = request.form.get('buildid')
-            Utils().restartBuild(buildid)
+            utils.actions(action='restart', buildid=buildid)
         
         elif 'cancel-build' in request.form:
             buildid = request.form.get('buildid')
-            Utils().cancelBuild(buildid)
+            utils.actions(action='cancel', buildid=buildid)
         
         return redirect(url_for('dashboard'), code=302)
 
-@app.route("/update")
-def update():
-    repos = Utils().getDashboardData()
-    return json.dumps(repos)
 
 @app.route("/settings", methods=['GET', 'POST'])
 def settings():
-    config = Utils().readConfig()
-
+    config = utils.config
     if request.method == 'GET':
-        repos = Utils().getMyRepos()
+        repos = utils.repos()
         return render_template('settings.html', repos=repos, config=config)
         
     elif request.method == 'POST':
-        if 'config-account' in request.form:
-            config['token'] = request.form.get('token')
-            config['github_token'] = request.form.get('github_token')
+        if 'configration' in request.form:
+            token = request.form.get('token')
+            github_token = request.form.get('github_token')
+            threads = int(request.form.get('threads'))
+            columns = int(request.form.get('columns'))
+            interval = int(request.form.get('interval'))
+            utils.saveConfig(token=token, 
+                             github_token=github_token, 
+                             threads=threads, 
+                             columns=columns,
+                             interval=interval)
 
-        elif 'config-dashboard' in request.form:
-            selected_repos = request.form.getlist("repos")
-            config['repos'] = selected_repos
-            config['threads'] = int(request.form.get('threads'))
-            config['interval'] = int(request.form.get('interval'))
-            config['columns'] = int(request.form.get('columns'))
+        elif 'repositories' in request.form:
+            repos = request.form.getlist("repos")
+            utils.saveConfig(repos=repos)
             
-        Utils().saveConfig(config)
         return redirect(url_for('settings'), code=302)
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()

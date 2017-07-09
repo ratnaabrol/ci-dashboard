@@ -8,23 +8,23 @@
     <body>
         {% block header %}
             <div id="header">
-                <p class="logo">CI Dashboard</p>
-                <div>
-                    <a href="/dashboard">Dashboard</a>&ensp;&ensp;
-                    <a href="/settings">Settings</a>&ensp;&ensp;
-                    <a href="https://github.com/ahmedelsayed-93/ci-dashboard" target="_blank">
-                        Github
-                    </a>&ensp;&ensp;
+                <div class="menu-bar-container">
+                    <div>
+                        <p class="logo">CI Dashboard</p>
+                    </div>
+                    <div style="width:auto;">
+                        <a href="/dashboard">Dashboard</a>&ensp;&ensp;
+                        <a href="/settings">Settings</a>&ensp;&ensp;
+                        <a href="https://github.com/ahmedelsayed-93/ci-dashboard" target="_blank">Github</a>
+                    </div>
                 </div>
             </div>
-        {% endblock%} 
+        {% endblock %} 
         <div id="content">
             {% block content %}
             {% endblock%} 
         </div>
         {% block footer %}
-            <div id="footer">
-            </div>
         {% endblock%}
     </body>
 </html>

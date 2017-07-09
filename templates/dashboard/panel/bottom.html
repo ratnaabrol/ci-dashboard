@@ -1,0 +1,13 @@
+{% if repo.last_build %}
+
+    <a href="{{base_url}}/builds/{{repo.last_build.id}}" target="_blank">
+        <strong># {{repo.last_build.number}}</strong>
+    </a>
+    {% if repo.last_build.state == 'started' %}
+        <p>Running for {{utils.tools.itemAge(repo.last_build.started_at)}}</p>
+    {% elif  repo.last_build.state != 'created' %}
+        <p>Finished {{utils.tools.itemAge(repo.last_build.finished_at)}}</p>
+    {% endif %}
+        <p><strong>{{repo.last_build.state.upper()}}</strong></p>
+
+{% endif %}

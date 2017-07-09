@@ -1,51 +1,59 @@
 * {padding: 0px; margin:0px; width:100%; font-family: 'Arial'}
 
-.settings-container
+.container
 {
     width:70%;
-    margin:0 auto;
-    margin-top:20px;
+    margin:60px auto;
 }
-.section
-{
-    margin:20 0px;
-}
+
 .page-title
 {
-    font-size: 28px;
-    font-weight: bold;
+    font-size: 26px;
     color:#1A5276;
 }
-.page-sub-title
+
+form{
+    margin-bottom:50px;
+}
+
+table tr, td{
+    width:auto;
+    font-size: 18px;
+    margin:5px;
+}
+table td
 {
-    font-size: 22px;
+    padding:3px;
+}
+
+input
+{
+    padding:7px;
+    font-size: 14px;
+    border-radius: 3px;
+    border: 1px solid #AEB6BF;
+}
+
+input[type=text]
+{
+    width:400px;
+}
+
+input[type=number]
+{
+    width:100px;
 }
 
 .save-button
 {
-    width:150;
-    height:40px;
+    width:120;
+    height:35px;
     background: #27AE60;
     border: none;
     color:#fff;
-    font-size: 16px;
+    font-size: 15px;
     border-radius: 5px;
 }
-
-
-input
-{
-    width: auto;
-    margin:5 0px;
-    border-radius: 5px;
-    border: 1px solid #AEB6BF;
-    padding:10px;
-    font-size: 16px;
-}
-
-input[type=text]{width: 300px;}
-
-label{font-size: 16px;}
 
 .repo-label 
 {
@@ -53,6 +61,7 @@ label{font-size: 16px;}
 	cursor: pointer;
     padding:10 15px;
     width: auto;
+    font-size: 15px;
     display: inline-block;
     border: 1px solid #E5E7E9; 
 	align-items:center;
@@ -66,6 +75,7 @@ input[type=checkbox]{display: none;}
 input[type=checkbox]:checked + .repo-label  
 {
     color:#fff;
-    background: #2980B9;
+    background: #21618C;
 }
+
 
