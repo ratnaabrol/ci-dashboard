@@ -1,4 +1,4 @@
-branch=${1:master}
+branch=${1:-master}
 path=${2:-/opt}
 
 echo "Installing dependencies..."
@@ -16,6 +16,7 @@ pip3 install PyGithub
 echo "Installing CI-Dashboard..."
 rm -rf ${path}/ci-dashboard
 git clone -b ${branch} https://github.com/ahmedelsayed-93/ci-dashboard ${path}/ci-dashboard
+echo 'config.json' > ${path}/ci-dashboard/.gitignore
 chmod -R a+rwX ${path}/ci-dashboard
 cp ${path}/ci-dashboard/cidashboard.sh /usr/bin/cidashboard
 chmod +x /usr/bin/cidashboard
