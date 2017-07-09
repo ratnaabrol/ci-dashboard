@@ -1,6 +1,8 @@
 # CI Dashboard
 Travis CI builds dashboard written in python
 
+![dashboard](docs/dashboard.png)
+
 ### Installation
 
 #### Quick start
@@ -49,8 +51,6 @@ cidashboard update
 ### Configuration
 To set configrations using the portal go to **http://{host}:{port}/settings**
 
-![settings](/docs/settings.png)
-
 or you can set it manualy by editing **ci-dashboard / config.json** file as follow
 ```json
 {
@@ -76,3 +76,9 @@ or you can set it manualy by editing **ci-dashboard / config.json** file as foll
 ```columns```: how many cloumns in the dashboard.
 
 ```interval``` : update interval in miliseconds
+
+### To do
+- handling errors
+
+### Author 
+[Ahmed El-Sayed](mailto:ahmed.m.elsayed-93@gmail.com) 
