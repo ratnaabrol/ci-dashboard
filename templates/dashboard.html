@@ -1,0 +1,41 @@
+{% extends 'layout.html' %}
+{% set columns = config.columns %}
+{% set interval = config.interval%}
+
+{% block header %}
+    <style>
+        :root
+        {
+            --panel-width: calc({{100/columns}}%);
+            --panel-height: calc({{(100/columns)*1.1}}%);
+            --repo-slug: calc({{64/columns}}px);
+            --event-title: calc({{52/columns}}px);
+            --footer-text: calc({{45/columns}}px); 
+            --event-details-text: calc({{50/columns}}px);
+            --event-details-image: calc({{50/columns}}px);  
+        }
+        body{background: #000}
+    </style>
+    <script>
+        updateDashboard();
+        timer = setInterval(function(){updateDashboard();}, 5000);
+    </script>
+{% endblock %}
+
+{% block content %}
+    <div id="container">
+        <div class="loading">
+            <img src="/static/photos/loading.gif" width="80px">
+        </div>
+    </div>
+
+    <div class="modal fade" id="actions" role="dialog">
+        <div class="modal-dialog" style="width:35%">
+            <div class="modal-content">
+                <div class="modal-loading">
+                    Loading...
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

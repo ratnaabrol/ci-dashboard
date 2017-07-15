@@ -1,0 +1,49 @@
+
+{% for repo in repos %}   
+
+    <div class="child">
+        <div id="repo.id" class="panel {{repo.last_build.state or 'none'}}">
+            <div class="panel-top">
+                <a href="{{repo.info.url}}" target="_blank">{{repo.info.slug}}</a>
+                <img src="/static/photos/menu.png" class="dropdown" role="dialog" data-toggle="modal" data-slug="{{repo.info.slug}}" data-target="#actions">
+             </div>   
+
+            <div class="panel-middle">
+                {% if repo.last_build %}
+                    <div class="event">
+                        <a><strong><code>{{repo.last_build.event}}</code></strong></a> 
+                        <a>{{repo.last_build.event_title}}</a>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-1">
+                            <img class="icon" src="/static/photos/branch.png">
+                        </div>
+                        <div class="col-md-10" >
+                            {{repo.last_build.branch}} 
+                            <a href="{{repo.last_build.commit_url}}" target="_blank">{{repo.last_build.commit}}</a>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-1">
+                            <img class="icon" src="/static/photos/author.png">
+                        </div>
+                        <div class="col-md-10">
+                            {{repo.last_build.commit_author}}
+                        </div>
+                    </div>
+                {% else %}
+                    No builds for this repository
+                {% endif %}
+            </div>
+
+            <div class="panel-bottom">
+                {% if repo.last_build %}
+                    <a href="{{repo.last_build.url}}" target="_blank"><strong># {{repo.last_build.number}}</strong></a>
+                    <p>{{repo.last_build.time_event}}</p>
+                    <p><strong>{{repo.last_build.state}}</strong></p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+{% endfor %}
