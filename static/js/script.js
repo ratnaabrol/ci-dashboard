@@ -24,7 +24,7 @@ $(document).ready(function(){
 
 function updateDashboard(){
     $.ajax({
-        url: "/update",
+        url: "/dashboard/update",
         success: function (data) {
            $('#container').html(data);
         }

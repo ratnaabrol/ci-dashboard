@@ -11,7 +11,7 @@
             <div class="panel-middle">
                 {% if repo.last_build %}
                     <div class="event">
-                        <a><strong><code>{{repo.last_build.event}}</code></strong></a> 
+                        <a><span class="event-type">{{repo.last_build.event}}</span></a> 
                         <a>{{repo.last_build.event_title}}</a>
                     </div>
                     <div class="row">
@@ -20,7 +20,9 @@
                         </div>
                         <div class="col-md-10" >
                             {{repo.last_build.branch}} 
-                            <a href="{{repo.last_build.commit_url}}" target="_blank">{{repo.last_build.commit}}</a>
+                            <a href="{{repo.last_build.commit_url}}" target="_blank">
+                                <code>{{repo.last_build.commit_sha}}</code>
+                            </a>
                         </div>
                     </div>
                     <div class="row">

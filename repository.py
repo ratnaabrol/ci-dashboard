@@ -11,7 +11,9 @@ class Repository:
         self.__tools = Tools()
         self.__config = self.__tools.read_config()
         self.__travis_client = Travis(self.__config['travis_token'])
-        self.__github_client = Github(self.__config['github_token'])
+        self.__github_token = self.__config['github_token']
+        if self.__github_token:
+            self.__github_client = Github(self.__github_token)
     
     def info(self):
         repo = self.__travis_client.repo(self.slug).json()
@@ -26,13 +28,13 @@ class Repository:
             return None
         
     def branches(self):
-        response = self.__github_client.branches(self.slug.replace('%2F', '/'))
-        if response.status_code == 200:
-            branches = [branch['name'] for branch in response.json()]
+        if self.__github_token:
+            response = self.__github_client.branches(self.slug.replace('%2F', '/'))
+            if response.status_code == 200:
+                branches = [branch['name'] for branch in response.json()]
         else:
             branches = self.__travis_client.branches(self.slug, exists_on_github='true').json()
             branches = [branch['name'] for branch in branches['branches']]
-            
         return branches
     
     def trigger_build(self, branch):
@@ -40,7 +42,6 @@ class Repository:
         self.__travis_client.trigger_build(self.slug, data)
     
     def restart_build(self, buildid):
-        
         self.__travis_client.restart_build(buildid)
     
     def cancel_build(self, buildid):
@@ -53,8 +54,7 @@ class Repository:
             "slug": repo['slug'],
             "owner": repo['owner']['login'],
             "url": self.travis_url,
-            "default_branch": repo['default_branch']['name'],
-            "branches": self.branches()
+            "default_branch": repo['default_branch']['name']
         }
         return data
 
@@ -88,5 +88,5 @@ class Repository:
         elif build['state'] != 'created':
             time_event = 'Finished {}'.format(self.__tools.convert_time_to_age(build['finished_at']))
             data['time_event'] = time_event
-
+            
         return data

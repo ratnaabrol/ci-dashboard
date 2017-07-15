@@ -3,12 +3,12 @@
     <h4 class="modal-title">{{repo.info.slug}}</h4>
 </div>
 <div class="modal-body">
-    {% if repo.info.branches %}
+    {% if repo.branches %}
         <form class="form-inline" action="/dashboard" method="post">
             <h5><strong>Trigger new build</strong></h5>
             <div class="form-group" style="width:70%;">
                 <select class="form-control" name="branch" style="width:100%;">
-                    {% for branch in repo.info.branches %}
+                    {% for branch in repo.branches %}
                         <option>{{branch}}</option>
                     {% endfor %}
                 </select>
@@ -18,6 +18,7 @@
         </form>
     {% endif %}
 
+    {% if repo.last_build %}
     <form class="form" action="/dashboard" method="post">
         <input type='hidden' name='repo' value="{{repo.info.slug}}"/>
         <input type='hidden' name='buildid' value="{{repo.last_build.id}}"/>
@@ -27,5 +28,11 @@
             <button type="submit" name="restart-build" class="btn btn-primary">Restart build #{{repo.last_build.number}}</button>
         {% endif %}
     </form>
+    {% endif %}
+
+    {% if not repo.branches and not repo.last_build %}
+        Nothing to do
+    {% endif %}
+
 
 </div>

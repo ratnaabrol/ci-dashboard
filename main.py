@@ -34,17 +34,17 @@ def dashboard():
 
         return redirect(url_for('dashboard'), code=302)
 
-@app.route("/update")
-def update():
+@app.route("/dashboard/update")
+def update_dashboard():
     repos = get_dashboard()
-    html =  render_template("data.html", repos=repos)
+    html =  render_template("repo.html", repos=repos)
     return html
 
 @app.route("/modal")
 def repo_modal():
     slug = request.args.get('slug')
     repo = Repository(slug)
-    repo= {"info": repo.info(), "last_build": repo.last_build()}
+    repo = {"info": repo.info(), "last_build": repo.last_build(), "branches":repo.branches()}
     html =  render_template("modal.html", repo=repo)
     return html
     
