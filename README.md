@@ -15,10 +15,7 @@ sudo curl -sL https://raw.github.com/ahmedelsayed-93/ci-dashboard/master/scripts
 default branch: master , path: /opt
 ```
 ### How to use
-#### Help
 ```bash
-cidashboard help
-
 CI-Dashboard help
     Options:
     start :        start the server.
@@ -33,18 +30,11 @@ CI-Dashboard help
 ```bash
 cidashboard start --host {{host}} --port {{port}}
 ```
+
 CI-Dashboard server will be started in new tmux session named [cidashboard].
 - Go to settings page **(http:/{host}:{port}/settings)**, and set your configrations.
 - Go to Dashboard page **(http:/{host}:{port}/dashboard)**, and have fun!.
 
-#### Stop
-```bash
-cidashboard stop
-```
-#### Update
-```bash
-cidashboard update 
-```
 
 ### Author
-[Ahmed El-Sayed]('mailto:ahmed.m.elsayed93@gmail.com')
+[Ahmed El-Sayed](mailto:ahmed.m.elsayed93@gmail.com)

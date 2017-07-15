@@ -9,6 +9,7 @@ app = Flask(__name__)
 
 tools = Tools()
 
+@app.route("/")
 @app.route("/dashboard", methods=["GET", "POST"])
 def dashboard():
     config = tools.read_config() 
