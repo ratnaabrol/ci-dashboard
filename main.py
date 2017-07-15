@@ -56,10 +56,12 @@ def settings():
     if request.method == 'POST':    
         if 'configration' in request.form:  
             travis_token = request.form.get('travis_token')
+            github_token = request.form.get('github_token')
             threads = int(request.form.get('threads'))
             columns = int(request.form.get('columns'))
             interval = int(request.form.get('interval'))
             tools.save_config(travis_token=travis_token,
+                              github_token=github_token,
                               threads=threads, 
                               columns=columns,
                               interval=interval)

@@ -1,1 +1,8 @@
-{"repos": [], "interval": 10000, "columns": 3, "github_token": "", "token": "", "threads": 20}
+{
+    "columns": 3,
+    "github_token": "",
+    "interval": 10000,
+    "repos": [],
+    "threads": 20,
+    "travis_token": ""
+}

@@ -1,14 +1,8 @@
-// update dashboard data
-function updateDashboard(){
-    $.ajax({
-        url: "/update",
-        success: function (data) {
-           $('#container').html(data);
-        },
-    });
-};
+timer = setInterval(function(){updateDashboard();}, parseInt(interval));
 
 $(document).ready(function(){
+    
+    updateDashboard();
 
     $("#actions").on("shown.bs.modal", function (e) {
         clearTimeout(timer);
@@ -23,7 +17,17 @@ $(document).ready(function(){
 
     $("#actions").on("hidden.bs.modal", function(event){
         $('.modal-content').html('<div class="modal-loading">Loading...</div>');
-        timer = setInterval(function(){updateDashboard();}, 5000);
+        timer = setInterval(function(){updateDashboard();}, parseInt(interval));
     });
 
 });
+
+function updateDashboard(){
+    $.ajax({
+        url: "/update",
+        success: function (data) {
+           $('#container').html(data);
+        }
+    });
+};
+

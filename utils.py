@@ -2,21 +2,21 @@ import json, time, os, queue
 from threading import Thread
 from tools import Tools
 from repository import Repository
-from travis.client import Client
+from clients.travis import Travis
 
 tools = Tools()
-travis = Client(tools.read_config()['travis_token'])
+travis = Travis(tools.read_config()['travis_token'])
 
 def get_my_repos():
     token = tools.read_config()['travis_token']
-    travis = Client(token)
+    travis = Travis(token)
     try:
         github_member = travis.user().json()['login']
         repos = travis.repos(limit=100000, member=github_member, active=True).json()['repositories'] 
     except:
         repos = []
 
-    return  repos
+    return repos
 
 def get_dashboard():
     

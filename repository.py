@@ -1,5 +1,7 @@
-from travis.client import Client
+from clients.travis import Travis
+from clients.github import Github
 from tools import Tools
+from requests import HTTPError
 
 class Repository:
     def __init__(self, slug):
@@ -8,7 +10,8 @@ class Repository:
         self.github_url = "http://github.com/{slug}".format(slug=slug)
         self.__tools = Tools()
         self.__config = self.__tools.read_config()
-        self.__travis_client = Client(self.__config['travis_token'])
+        self.__travis_client = Travis(self.__config['travis_token'])
+        self.__github_client = Github(self.__config['github_token'])
     
     def info(self):
         repo = self.__travis_client.repo(self.slug).json()
@@ -23,14 +26,21 @@ class Repository:
             return None
         
     def branches(self):
-        branches = self.__travis_client.branches(self.slug, exists_on_github='true').json()
-        return [branch['name'] for branch in branches['branches']]
+        response = self.__github_client.branches(self.slug.replace('%2F', '/'))
+        if response.status_code == 200:
+            branches = [branch['name'] for branch in response.json()]
+        else:
+            branches = self.__travis_client.branches(self.slug, exists_on_github='true').json()
+            branches = [branch['name'] for branch in branches['branches']]
+            
+        return branches
     
     def trigger_build(self, branch):
         data = {"request": {"branch": branch}}
         self.__travis_client.trigger_build(self.slug, data)
     
     def restart_build(self, buildid):
+        
         self.__travis_client.restart_build(buildid)
     
     def cancel_build(self, buildid):

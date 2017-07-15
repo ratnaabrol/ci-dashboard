@@ -1,6 +1,6 @@
 import requests
 
-class Client:
+class Travis:
     def __init__(self, token):
         self.session = requests.Session()
         self.session.headers = {
