@@ -1,51 +1,67 @@
-{% extends "base.html" %}
-
-{% block head %}
-    <link rel="stylesheet" href="/static/css/settings.css">
-{% endblock %}
+{% extends 'layout.html' %}
 
 {% block content %}
-<div class="container">
-    <p class="page-title">Settings</p><br>
-    <form method="post" action="/settings">
-        <table>
-            <tr>
-                <td>Travis token</td>
-                <td><input type="text" name="token" value="{{config.token}}"></td>
-            </tr>
-            <tr>
-                <td>Github token</td>
-                <td><input type="text" name="github_token" value="{{config.github_token}}"></td>
-            </tr>
-            <tr>
-                <td>Threads</td>
-                <td><input type="number" name="threads" value="{{config.threads}}"></td>
-            </tr>
-            <tr>
-                <td>Columns</td>
-                <td><input type="number" name="columns" value="{{config.columns}}"></td>
-            </tr>
-            <tr>
-                <td>Interval (ms)</td>
-                <td><input type="number" name="interval" value="{{config.interval}}"></td> 
-            </tr>
-         </table><br>
-         <input class="save-button" type="submit" name="configration" value="Save">
-    </form>
+    <div class="container" style="width:70%">
+        {% if response != None %}
+            {% if response %}
+                <div class="alert alert-success fade in">
+                    <a href="#" class="close" data-dismiss="alert">&times;</a>
+                    <strong>Success</strong> Settings updated successfully
+                </div>
+            {% else %}
+                <div class="alert alert-danger fade in">
+                    <a href="#" class="close" data-dismiss="alert">&times;</a>
+                    <strong>Error</strong> A problem has been occurred while saving your configrations
+                </div>
+            {% endif %}
+        {% endif %}
 
-    <form method="post" action="/settings">
-        <p class="page-title">Repositories</p><br>
-        <div style="display:inline-block">
-        {% if not repos %}
-            No repositories were found
-        {% else %}
-            {% for repo in repos %}
+        <h2>Settings</h2><br>
+        <form method="post" action="/settings">
+            <div class="form-group">
+                <label for="travis_token">Travis token</label>
+                <input type="text" class="form-control" name="travis_token" value="{{config.travis_token}}" placeholder="Travis token" required>
+            </div>
+            <div class="form-group">
+                <label for="travis_token">Github token</label>
+                <input type="text" class="form-control" name="github_token" value="{{config.github_token}}" placeholder="Github token (Optional)">
+            </div>
+            <div class="form-group row">
+                <div class="col-xs-4">
+                    <label for="columns">Columns</label>
+                    <input type="number" class="form-control" name="columns" value="{{config.columns}}">
+                </div>
+                <div class="col-xs-4">
+                    <label for="interval">Interval (ms)</label>
+                    <input type="number" class="form-control" name="interval" value="{{config.interval}}">
+                </div>
+                <div class="col-xs-4">
+                    <label for="threads">Threads</label>
+                    <input type="number" class="form-control" name="threads" value="{{config.threads}}">
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-xs-3">
+                    <button type="submit" name="configration" class="btn btn-success btn-block">Save</button>
+                </div>
+            </div>
+        </form><br>
+        <form method="post" action="/settings">
+            <h3>Repositories</h3><br>
+            {% if not repos %}
+                No repositories were found
+            {% else %}
+                {% for repo in repos %}
                 <input type="checkbox" value="{{repo.slug}}" id="{{repo.slug}}" name="repos" {{'checked' if repo.slug in config.repos}}>
                 <label class="repo-label" for="{{repo.slug}}">{{repo.slug}}</label>
-            {% endfor %}
-        {% endif %}
-        </div><br><br>
-        <input class="save-button" type="submit" name="repositories" value="Save">
-    </form>
-</div>
+                {% endfor %}
+                <br><br>
+                <div class="form-group row">
+                    <div class="col-xs-3">
+                        <button type="submit" name="repositories" class="btn btn-success btn-block">Save</button>
+                    </div>
+                </div>
+            {% endif %}
+        </form>
+    </div><br><br>
 {% endblock %}

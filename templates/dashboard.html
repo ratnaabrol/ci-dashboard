@@ -1,0 +1,41 @@
+{% set interval = config.interval%}
+{% set columns = config.columns %}
+
+<script>
+    interval = "{{interval}}";
+</script>
+
+{% extends 'layout.html' %}
+{% block header %}
+    <style>
+        :root
+        {
+            --panel-width: calc({{100/columns}}%);
+            --panel-height: calc({{100*1.1/columns}}%);
+            --repo-slug: calc({{64/columns}}px);
+            --event-title: calc({{52/columns}}px);
+            --footer-text: calc({{45/columns}}px); 
+            --event-details-text: calc({{50/columns}}px);
+            --event-details-image: calc({{50/columns}}px);  
+        }
+        body{background: #000}
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div id="container">
+        <div class="loading">
+            <img src="/static/photos/loading.gif" width="80px">
+        </div>
+    </div>
+
+    <div class="modal fade" id="actions" role="dialog">
+        <div class="modal-dialog" style="width:35%">
+            <div class="modal-content">
+                <div class="modal-loading">
+                    Loading...
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

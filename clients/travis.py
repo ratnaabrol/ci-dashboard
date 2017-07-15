@@ -1,6 +1,6 @@
 import requests
 
-class Client:
+class Travis:
     def __init__(self, token):
         self.session = requests.Session()
         self.session.headers = {
@@ -43,19 +43,19 @@ class Client:
         response = self.call_api(url, params=params)
         return response
 
-    def branches(self, repoid, **params):
-        url = '/repo/' + str(repoid) + '/branches'
+    def branches(self, slug, **params):
+        url = '/repo/' + slug + '/branches'
         response = self.call_api(url, params=params)
         return response
     
-    def builds(self, repoid, **params):
-        url = '/repo/' + str(repoid) + '/builds'
+    def builds(self, slug, **params):
+        url = '/repo/' + slug + '/builds'
         params['include'] = 'build.commit'
         response = self.call_api(url, params=params)
         return response
 
-    def trigger_build(self, repoid, data):
-        url = '/repo/' + str(repoid) + '/requests'
+    def trigger_build(self, slug, data):
+        url = '/repo/' + slug + '/requests'
         response = self.call_api(url, method='post', data=data)
         return response
 
