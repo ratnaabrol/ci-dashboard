@@ -2,8 +2,7 @@ timer = setInterval(function(){updateDashboard();}, parseInt(interval));
 
 $(document).ready(function(){
     
-    updateDashboard();
-    
+    updateDashboard(); 
     $("#actions").on("shown.bs.modal", function (e) {
         clearTimeout(timer);
         var slug = e.relatedTarget.dataset.slug; 

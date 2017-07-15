@@ -1,6 +1,8 @@
 # CI Dashboard
 Travis CI builds dashboard written in python
 
+![dashboard](/docs/dashboard.png)
+
 ### Installation
 
 #### Quick start
