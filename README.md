@@ -37,6 +37,8 @@ CI-Dashboard server will be started in new tmux session named [cidashboard].
 - Go to settings page **(http:/{host}:{port}/settings)**, and set your configrations.
 - Go to Dashboard page **(http:/{host}:{port}/dashboard)**, and have fun!.
 
+### To do
+- Error handling 
 
 ### Author
 [Ahmed El-Sayed](mailto:ahmed.m.elsayed93@gmail.com)
