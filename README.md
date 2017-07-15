@@ -42,3 +42,4 @@ CI-Dashboard server will be started in new tmux session named [cidashboard].
 
 ### Author
 [Ahmed El-Sayed](mailto:ahmed.m.elsayed93@gmail.com)
+
