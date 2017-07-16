@@ -10,7 +10,7 @@ default branch: master , path: /opt
 ```
 ### Getting started
 
-- start server
+- Start server
 ```bash
 cidashboard start --host {{host}} --port {{port}}
 ```
@@ -18,19 +18,11 @@ cidashboard start --host {{host}} --port {{port}}
 - Go to **Settings** page ```http:/{host}:{port}/settings```, and set your configrations.
 - Go to **Dashboard** page ```http:/{host}:{port}/dashboard```, and have fun!. 
 
-- for help 
+- For help 
 ```
 cidashboard help 
-
-CI-Dashboard help
-    Options:
-    start :        start the server.
-        options:
-        --host : the hostname to listen on, default 127.0.0.1
-        --port : the port of the webserver, default 5000
-    stop   :    stop the server.
-    update :    update software.
 ```
+
 ### To do
 - Error handling 
 
