@@ -42,6 +42,9 @@ cidashboard help
 ### To do
 - Error handling 
 
+### Thanks
+- To [John Kheir](https://github.com/john-kheir) for his valuable remarks
+
 ### Author
 [Ahmed El-Sayed](mailto:ahmed.m.elsayed93@gmail.com)
 
