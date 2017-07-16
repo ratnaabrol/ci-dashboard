@@ -13,7 +13,7 @@ python3 main.py --host ${host} --port ${port}
 ```
 #### Full installation
 ```bash
-sudo curl -sL https://raw.github.com/ahmedelsayed-93/ci-dashboard/master/scripts/install.sh | bash -s {{branch}} {{path}}
+curl -sL https://raw.github.com/ahmedelsayed-93/ci-dashboard/master/scripts/install.sh | sudo bash -s {{branch}} {{path}}
 default branch: master , path: /opt
 ```
 ### How to use
