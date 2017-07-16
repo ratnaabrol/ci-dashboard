@@ -5,8 +5,7 @@ Travis CI builds dashboard written in python
 
 ### Installation
 ```bash
-curl -sL https://raw.github.com/ahmedelsayed-93/ci-dashboard/master/scripts/install.sh | sudo bash -s {{branch}} {{path}}
-default branch: master , path: /opt
+curl -sL https://raw.github.com/ahmedelsayed-93/ci-dashboard/master/scripts/install.sh | sudo bash 
 ```
 ### Getting started
 
