@@ -14,7 +14,7 @@ sudo pip3 install argparse
 
 echo "Installing CI-Dashboard..."
 sudo rm -rf ${path}/ci-dashboard
-git clone -b ${branch} https://github.com/ahmedelsayed-93/ci-dashboard ${path}/ci-dashboard
+sudo git clone -b ${branch} https://github.com/ahmedelsayed-93/ci-dashboard ${path}/ci-dashboard
 sudo echo 'config.json' > ${path}/ci-dashboard/.gitignore
 sudo chmod -R a+rwX ${path}/ci-dashboard
 sudo cp ${path}/ci-dashboard/scripts/cidashboard.sh /usr/bin/cidashboard
