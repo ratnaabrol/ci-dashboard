@@ -1,3 +1,5 @@
+#!/bin/bash
+
 ## default values
 path=$(cat /etc/ci-dashboard.config)
 host=${host:-127.0.0.1}
