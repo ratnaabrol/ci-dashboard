@@ -28,7 +28,7 @@ cidashboard start --host {{host}} --port {{port}}
 
     - ```columns ```    : number of columns to be shown in the dashboard.
 
-    - ```threads```     : number of threads.
+    - ```threads```     : number of threads to fetch repositories info in the same time.
 
 
 #### Open dashboard 
