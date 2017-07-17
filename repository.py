@@ -32,10 +32,13 @@ class Repository:
             response = self.__github_client.branches(self.slug.replace('%2F', '/'))
             if response.status_code == 200:
                 branches = [branch['name'] for branch in response.json()]
+                return branches
+            else:
+                return []
         else:
             branches = self.__travis_client.branches(self.slug, exists_on_github='true').json()
             branches = [branch['name'] for branch in branches['branches']]
-        return branches
+            return branches
     
     def trigger_build(self, branch):
         data = {"request": {"branch": branch}}
