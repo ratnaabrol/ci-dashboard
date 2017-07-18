@@ -11,6 +11,17 @@ class Tools:
             data = json.load(f)
         return data
 
+    def read_unprotected_config(self):
+        with open(self.__config_file, 'r') as f:
+            data = json.load(f)
+        
+        travis_token = data['travis_token']
+        github_token = data['github_token']
+        data['travis_token'] = travis_token[:3] + (len(travis_token) - 3) * '*'
+        data['github_token'] = github_token[:3] + (len(github_token) - 3) * '*'
+
+        return data
+
     def save_config(self, **kwargs):
         config = self.read_config()
         

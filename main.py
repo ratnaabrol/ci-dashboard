@@ -61,9 +61,14 @@ def settings():
             threads = int(request.form.get('threads'))
             columns = int(request.form.get('columns'))
             interval = int(request.form.get('interval'))
-            tools.save_config(travis_token=travis_token,
-                              github_token=github_token,
-                              threads=threads, 
+
+            if '*' not in travis_token:
+                tools.save_config(travis_token=travis_token)
+            
+            if '*' not in github_token:
+                tools.save_config(github_token=github_token)
+                
+            tools.save_config(threads=threads, 
                               columns=columns,
                               interval=interval)
 
@@ -75,7 +80,7 @@ def settings():
  
     return render_template('settings.html', 
                             repos=get_my_repos(), 
-                            config=tools.read_config(), 
+                            config=tools.read_unprotected_config(), 
                             response=response)
 
     
