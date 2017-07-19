@@ -18,7 +18,7 @@ def get_my_repos():
 
     return repos
 
-def get_dashboard():
+def get_dashboard(event_type=None):
     
     dashboard = []
     config = tools.read_config()
@@ -33,7 +33,7 @@ def get_dashboard():
             repo = Repository(slug)
             data = {
                 "info": repo.info(),
-                "last_build": repo.last_build()
+                "last_build": repo.last_build(event_type=event_type)
             }
             dashboard.append(data)
     

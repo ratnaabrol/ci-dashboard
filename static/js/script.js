@@ -22,8 +22,11 @@ $(document).ready(function(){
 });
 
 function updateDashboard(){
+
+   var event_type = $('#event_filter').val();
+
     $.ajax({
-        url: "/dashboard/update",
+        url: "/dashboard/update?event_type=" + event_type,
         success: function (data) {
            $('#container').html(data);
         }

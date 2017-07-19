@@ -37,7 +37,8 @@ def dashboard():
 
 @app.route("/dashboard/update")
 def update_dashboard():
-    repos = get_dashboard()
+    event_type = request.args.get('event_type')
+    repos = get_dashboard(event_type)
     html =  render_template("repo.html", repos=repos)
     return html
 

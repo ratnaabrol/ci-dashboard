@@ -19,8 +19,13 @@ class Repository:
         repo = self.__travis_client.repo(self.slug).json()
         return self.__repoParser(repo)
 
-    def last_build(self):
-        builds = self.__travis_client.builds(self.slug, limit=1).json()['builds']
+    def last_build(self, event_type='all'):
+
+        params = {'limit':1}
+        if event_type != 'all':
+            params['event_type'] = event_type
+            
+        builds = self.__travis_client.builds(self.slug, **params).json()['builds']
         if builds:
             last_build = builds[0]
             return self.__buildParser(last_build)

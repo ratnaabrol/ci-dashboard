@@ -15,6 +15,17 @@
                 <div class="navbar-header">
                     <a class="navbar-brand" href="/">CI Dashboard</a>
                 </div>
+
+                <ul class="nav navbar-nav navbar-right">
+                    <select class="form-control" id="event_filter">
+                        <option value="all">All</option>
+                        <option value="cron">Cron</option>
+                        <option value="push">Push</option>
+                        <option value="pull_request">Pull Request</option>
+                        <option value="api">Api</option>
+                    </select>
+                </ul>
+
                 <ul class="nav navbar-nav navbar-right">
                     <li><a href="/dashboard">Dashboard</a></li>
                     <li><a href="/settings">Settings</a></li>
