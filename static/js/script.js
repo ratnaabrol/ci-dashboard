@@ -19,16 +19,20 @@ $(document).ready(function(){
         timer = setInterval(function(){updateDashboard();}, parseInt(interval));
     });
 
+    $("#event_filter").change(function() {
+        updateDashboard();
+    });
+
 });
 
 function updateDashboard(){
-
+    $("#update-loader").show();
    var event_type = $('#event_filter').val();
-
     $.ajax({
         url: "/dashboard/update?event_type=" + event_type,
         success: function (data) {
            $('#container').html(data);
+           $("#update-loader").hide();
         }
     });
 };

@@ -16,15 +16,18 @@
                     <a class="navbar-brand" href="/">CI Dashboard</a>
                 </div>
 
-                <ul class="nav navbar-nav navbar-right">
-                    <select class="form-control" id="event_filter">
-                        <option value="all">All</option>
-                        <option value="cron">Cron</option>
-                        <option value="push">Push</option>
-                        <option value="pull_request">Pull Request</option>
-                        <option value="api">Api</option>
-                    </select>
-                </ul>
+                <form class="navbar-form navbar-left">
+                    <div class = "form-group" style="padding:0 10px; background: #000; border-radius:5px;">
+                        <label for="event_filter" style="color:#D7DBDD">Events</label>
+                        <select id="event_filter" class="filter">
+                          <option value="all">All</option>
+                          <option value="cron">Cron</option>
+                          <option value="pull_request"n>Pull request</option>
+                          <option value="push">Push</option>
+                          <option value="api">Api</option>
+                        </select>
+                    </div>                  
+                </form>
 
                 <ul class="nav navbar-nav navbar-right">
                     <li><a href="/dashboard">Dashboard</a></li>
@@ -32,6 +35,13 @@
                     <li><a href="https://github.com/ahmedelsayed-93/ci-dashboard" target="_blank">Github</a></li>
                 </ul>
             </div>
+
+            <div id="update-loader" class="bars-container">
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+            </div>
+
         </nav>
         <div>
             {% block content %}{% endblock %}

@@ -35,8 +35,10 @@ def get_dashboard(event_type=None):
                 "info": repo.info(),
                 "last_build": repo.last_build(event_type=event_type)
             }
-            dashboard.append(data)
-    
+
+            if data['last_build'] or event_type == 'all':
+                dashboard.append(data)
+
     def workers():
         threads_list = []
         threads = config['threads']
