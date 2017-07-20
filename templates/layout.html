@@ -12,15 +12,28 @@
     <body>
         <nav class="navbar navbar-inverse" style="border-radius:0px;">
             <div class="container">
+
                 <div class="navbar-header">
                     <a class="navbar-brand" href="/">CI Dashboard</a>
                 </div>
+
+                {% block filter %}
+                {% endblock %}
+
                 <ul class="nav navbar-nav navbar-right">
                     <li><a href="/dashboard">Dashboard</a></li>
                     <li><a href="/settings">Settings</a></li>
                     <li><a href="https://github.com/ahmedelsayed-93/ci-dashboard" target="_blank">Github</a></li>
                 </ul>
+
             </div>
+
+            <div id="update-loader" class="bars-container">
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+            </div>
+
         </nav>
         <div>
             {% block content %}{% endblock %}
