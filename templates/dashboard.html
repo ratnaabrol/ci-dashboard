@@ -22,6 +22,26 @@
     </style>
 {% endblock %}
 
+{% block filter %}
+<ul class="navbar-form navbar-left">
+    <div class="form-group">                        
+        <div class="dropdown pull-center">
+            <button id="event_filter" class="btn btn-black dropdown-toggle" type="button" data-toggle="dropdown" value="all">					
+                Events
+            </button>
+            <ul class="dropdown-menu">
+                <li><a onclick="filter_events('cron');">ِCron</a></li>
+                <li><a onclick="filter_events('pull_request');">ِPull request</a></li>
+                <li><a onclick="filter_events('push');">ِPush</a></li>
+                <li><a onclick="filter_events('api');">ِApi</a></li>
+                <li role="separator" class="divider"></li>
+                <li><a onclick="filter_events('all');">ِRemove filter</a></li>
+            </ul>						  
+        </div>
+    </div>    
+</ul>
+{% endblock %}
+
 {% block content %}
     <div id="container">
         <div class="loading">

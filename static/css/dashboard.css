@@ -121,7 +121,7 @@ html{font-size:1vw}
 }
 
 .bar:nth-child(1) {
-  background-color: #2874A6;
+  background-color: #1A5276;
   animation: loading 2s linear infinite;
 }
 .bar:nth-child(2) {
