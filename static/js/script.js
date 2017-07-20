@@ -37,3 +37,16 @@ function updateDashboard(){
     });
 };
 
+function filter_events(event)
+{
+    if (event == 'all'){
+        $("#event_filter").text('Events');
+    }
+    else{
+        $("#event_filter").text("Event : " + event.replace('_', ' '));
+    }
+   
+   $("#event_filter").val(event);
+   updateDashboard();
+}
+

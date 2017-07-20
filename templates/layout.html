@@ -12,28 +12,39 @@
     <body>
         <nav class="navbar navbar-inverse" style="border-radius:0px;">
             <div class="container">
+
                 <div class="navbar-header">
                     <a class="navbar-brand" href="/">CI Dashboard</a>
                 </div>
 
-                <form class="navbar-form navbar-left">
-                    <div class = "form-group" style="padding:0 10px; background: #000; border-radius:5px;">
-                        <label for="event_filter" style="color:#D7DBDD">Events</label>
-                        <select id="event_filter" class="filter">
-                          <option value="all">All</option>
-                          <option value="cron">Cron</option>
-                          <option value="pull_request"n>Pull request</option>
-                          <option value="push">Push</option>
-                          <option value="api">Api</option>
-                        </select>
-                    </div>                  
-                </form>
+                <ul class="navbar-form navbar-left" role="search">
+                    <div class="form-group">                        
+                        <div class="dropdown pull-center">
+                            <button id="event_filter" class="btn btn-black dropdown-toggle" type="button" data-toggle="dropdown" value="all">					
+                                Events
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a onclick="filter_events('cron');">ِCron</a></li>
+                                <li><a onclick="filter_events('pull_request');">ِPull request</a></li>
+                                <li><a onclick="filter_events('push');">ِPush</a></li>
+                                <li><a onclick="filter_events('api');">ِApi</a></li>
+                                <li role="separator" class="divider"></li>
+                                <li><a onclick="filter_events('all');">ِRemove filter</a></li>
+                            </ul>						  
+                        </div>
+                    </div>    
+                </ul>
+
+                
+
+                
 
                 <ul class="nav navbar-nav navbar-right">
                     <li><a href="/dashboard">Dashboard</a></li>
                     <li><a href="/settings">Settings</a></li>
                     <li><a href="https://github.com/ahmedelsayed-93/ci-dashboard" target="_blank">Github</a></li>
                 </ul>
+
             </div>
 
             <div id="update-loader" class="bars-container">
