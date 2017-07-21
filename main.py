@@ -1,90 +1,82 @@
 from flask import Flask, request, redirect, render_template, url_for, Response
-import argparse, json, time
-from utils import *
-from tools import Tools
-from requests import HTTPError
-from repository import Repository
+import argparse, json
+from lib.tools import Tools
+from lib.dashboard import Dashboard
+from lib.repositories import Repositories
+from lib.clients.travis import Travis
 
 app = Flask(__name__)
-
 tools = Tools()
 
 @app.route("/")
 @app.route("/dashboard", methods=["GET", "POST"])
 def dashboard():
-    config = tools.read_config() 
     if request.method == 'GET':
-        repos = get_dashboard()
-        return render_template("dashboard.html", repos=repos, config=config)
+        return render_template("dashboard.html", config=tools.read_config())
 
     elif request.method == 'POST':
-        if 'trigger' in request.form:
-            repo = request.form.get('repo')
+        slug = request.form.get('repo')
+        if 'trigger-build' in request.form:
             branch = request.form.get('branch')
-            Repository(repo).trigger_build(branch)
+            Repositories().repo(slug).trigger_build(branch)
 
         elif 'restart-build' in request.form:
-            repo = request.form.get('repo')
             buildid = request.form.get('buildid')
-            Repository(repo).restart_build(buildid)
+            Repositories().repo(slug).restart_build(buildid)
         
         elif 'cancel-build' in request.form:
-            repo = request.form.get('repo')
             buildid = request.form.get('buildid')
-            Repository(repo).cancel_build(buildid)
+            Repositories().repo(slug).cancel_build(buildid)
 
         return redirect(url_for('dashboard'), code=302)
 
 @app.route("/dashboard/update")
 def update_dashboard():
-    event_type = request.args.get('event_type')
-    repos = get_dashboard(event_type)
-    html =  render_template("repo.html", repos=repos)
+    start = int(request.args.get('start'))
+    end = int(request.args.get('end'))  
+    event_type = request.args.get('event_type')  
+    repos = Dashboard().fetch(start, end, event_type=event_type)
+    html = render_template("repos.html", repos=repos)
     return html
 
-@app.route("/modal")
+@app.route("/dashboard/modal")
 def repo_modal():
     slug = request.args.get('slug')
-    repo = Repository(slug)
-    repo = {"info": repo.info(), "last_build": repo.last_build(), "branches":repo.branches()}
-    html =  render_template("modal.html", repo=repo)
+    repo = Repositories().repo(slug)
+    repo = {
+        "info": repo.info(),  
+        "branches":repo.branches(),
+        "last_build": repo.last_build()
+    }
+    html = render_template("modal.html", repo=repo)
     return html
-    
+
 @app.route("/settings", methods=['GET', 'POST'])
 def settings():
-    response = None
-    config = tools.read_config()
-
+    success = None
     if request.method == 'POST':    
         if 'configration' in request.form:  
             travis_token = request.form.get('travis_token')
             github_token = request.form.get('github_token')
             threads = int(request.form.get('threads'))
-            columns = int(request.form.get('columns'))
+            grid_size = int(request.form.get('grid_size'))
             interval = int(request.form.get('interval'))
-
-            if '*' not in travis_token:
-                tools.save_config(travis_token=travis_token)
-            
-            if '*' not in github_token:
-                tools.save_config(github_token=github_token)
-                
             tools.save_config(threads=threads, 
-                              columns=columns,
-                              interval=interval)
+                              grid_size=grid_size, 
+                              interval=interval, 
+                              travis_token=travis_token, 
+                              github_token=github_token)
 
         elif 'repositories' in request.form:
             selected_repos = request.form.getlist("repos")
             tools.save_config(repos=selected_repos)
 
-        response = True
- 
-    return render_template('settings.html', 
-                            repos=get_my_repos(), 
-                            config=tools.read_unprotected_config(), 
-                            response=response)
+        success = True
 
-    
+    repos = Repositories().list()
+    config = tools.read_config(protected=True)
+    return render_template('settings.html', repos=repos, config=config, success=success) 
+     
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--host", type=str, default='127.0.0.1', help="the hostname to listen on")

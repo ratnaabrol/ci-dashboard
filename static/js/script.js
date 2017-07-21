@@ -1,52 +1,96 @@
-timer = setInterval(function(){updateDashboard();}, parseInt(interval));
+xhr = null;
 
-$(document).ready(function(){
-    
-    updateDashboard(); 
-    $("#actions").on("shown.bs.modal", function (e) {
-        clearTimeout(timer);
+function startDashboardUpdateService(currentPage) {
+    updateService = new dashboardUpdateService(currentPage);
+    updateService.updateNow();
+    updateService.run();
+}
+
+function dashboardUpdateService(currentPage) {
+    this.monitoringTimer = null;
+    this.currentPage = currentPage;
+    this.numberOfPages = Math.ceil(numberOfRepos / gridSize);
+
+    this.run = function() {
+        if(this.monitoringTimer) {
+            return
+        }
+        var _this = this;
+        this.monitoringTimer = setInterval(function() {
+            _this.updateNow()} , interval);
+    }
+
+    this.pause = function() {
+        clearInterval(this.monitoringTimer);
+        this.monitoringTimer = null;
+    };
+
+    this.pagination = function() { 
+        if(this.currentPage > this.numberOfPages){
+            this.currentPage = 1;
+        }
+        var start = gridSize * (this.currentPage - 1);
+        if ((start + gridSize) < numberOfRepos) {
+            end = start + gridSize;
+        }
+        else {
+            end = numberOfRepos;
+        }
+        return [start, end];
+    }
+
+    this.updateNow = function() {
+        if(xhr){
+            xhr.abort()
+        }
+        var [start, end] = this.pagination();
+        var event_type = $("#eventFilter").val();
+        xhr = $.ajax({
+            url: "/dashboard/update?start="+start+"&end="+end+"&event_type="+event_type,
+            beforeSend: function() {
+                $("#update-loader").show();
+            },
+            success: function(data) {
+                $('#container').html(data);
+            },
+            complete: function() {
+                $("#update-loader").hide();
+            }
+        });
+        
+        this.currentPage++;
+    }
+}
+
+$(document).ready(function(){  
+    //show modal  
+    $("#modal").on("shown.bs.modal", function (e) {
+        updateService.pause();
         var slug = e.relatedTarget.dataset.slug; 
         $.ajax({
-            url: "/modal?slug=" + slug,
+            url: "/dashboard/modal?slug=" + slug,
             success: function (data) {
                 $('.modal-content').html(data);
-            },
+            }
         });      
     });
-
-    $("#actions").on("hidden.bs.modal", function(event){
+    //hide modal
+    $("#modal").on("hidden.bs.modal", function(event){
         $('.modal-content').html('<div class="modal-loading">Loading...</div>');
-        timer = setInterval(function(){updateDashboard();}, parseInt(interval));
-    });
-
-    $("#event_filter").change(function() {
-        updateDashboard();
+        updateService.run();
     });
 
 });
 
-function updateDashboard(){
-    $("#update-loader").show();
-   var event_type = $('#event_filter').val();
-    $.ajax({
-        url: "/dashboard/update?event_type=" + event_type,
-        success: function (data) {
-           $('#container').html(data);
-           $("#update-loader").hide();
-        }
-    });
-};
 
-function filter_events(event)
-{
-    if (event == 'all'){
-        $("#event_filter").text('Events');
+function filterEvents(event) {
+    if (event == 'all') {
+        $("#eventFilter").text('Events');
     }
-    else{
-        $("#event_filter").text("Event : " + event.replace('_', ' '));
+    else {
+        $("#eventFilter").text("Event : " + event.replace('_', ' '));
     }
-   
-   $("#event_filter").val(event);
-   updateDashboard();
+   $("#eventFilter").val(event);
+   updateService.currentPage = 1;
+   updateService.updateNow();
 }
-
