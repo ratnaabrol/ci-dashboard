@@ -47,6 +47,8 @@ function dashboardService() {
             },
             success: function(data, status, xhr) {
                 $('#container').html(data);
+                $('#pagination').html(service.currentPage + '/' + xhr.getResponseHeader('pages'));
+                
                 if (xhr.getResponseHeader('last_page') == 'True') {
                     service.currentPage = 1;
                 }
@@ -103,7 +105,7 @@ $(document).ready(function(){
 
 
         //  var number_of_pages = xhr.getResponseHeader('pages');
-        //         $('#pagination').html(service.currentPage+'/'+number_of_pages);
+        //         
 
 
 

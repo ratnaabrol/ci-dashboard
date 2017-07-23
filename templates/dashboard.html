@@ -29,7 +29,6 @@
                 <button id="filterLabel" class="btn btn-black" type="button" data-toggle="dropdown">					
                     Events
                 </button>
-                <span class="nav-text" id='pagination'></span>
                 <ul id="eventFilter" class="dropdown-menu">
                     <li event="cron"><a>Cron</a></li>
                     <li event="pull_request"><a>Pull request</a></li>
@@ -39,7 +38,10 @@
                     <li event="all"><a>Remove filter</a></li>
                 </ul>						  
             </div>
-        </div>    
+        </div>   
+    </ul>
+    <ul class="navbar-form navbar-left">
+        <button id="pagination" class="btn btn-black" type="button"></button> 
     </ul>
 {% endblock %}
 
