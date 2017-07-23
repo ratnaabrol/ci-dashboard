@@ -26,17 +26,17 @@
     <ul class="navbar-form navbar-left">
         <div class="form-group">                        
             <div class="dropdown pull-center">
-                <button id="eventFilter" class="btn btn-black dropdown-toggle" type="button" data-toggle="dropdown" value="">					
+                <button id="filterLabel" class="btn btn-black" type="button" data-toggle="dropdown">					
                     Events
                 </button>
                 <span class="nav-text" id='pagination'></span>
-                <ul class="dropdown-menu">
-                    <li><a onclick="filterEvents('cron');">ِCron</a></li>
-                    <li><a onclick="filterEvents('pull_request');">ِPull request</a></li>
-                    <li><a onclick="filterEvents('push');">ِPush</a></li>
-                    <li><a onclick="filterEvents('api');">ِApi</a></li>
+                <ul id="eventFilter" class="dropdown-menu">
+                    <li event="cron"><a>Cron</a></li>
+                    <li event="pull_request"><a>Pull request</a></li>
+                    <li event="push"><a>Push</a></li>
+                    <li event="api"><a>Api</a></li>
                     <li role="separator" class="divider"></li>
-                    <li><a onclick="filterEvents('');">ِRemove filter</a></li>
+                    <li event="all"><a>Remove filter</a></li>
                 </ul>						  
             </div>
         </div>    

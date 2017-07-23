@@ -9,7 +9,9 @@ function dashboardService() {
     service = this;
     service.timer = null;
     service.currentPage = 1;
+    service.eventType = null;
     service.interval = interval;
+    service.requestData = Object();
 
     service.start = function() {
         if(service.timer) {return;}
@@ -25,29 +27,27 @@ function dashboardService() {
 
     service.reset = function() {
         service.currentPage = 1;
+        service.requestData = Object();
     };
 
     service.updateDashboard = function() {
-
-        var requestUrl = "/dashboard/fetch?page=" + service.currentPage;
-        eventType = $("#eventFilter").val(); 
-
-        if(eventType) {
-            requestUrl += "&event_type=" + eventType;
+        service.requestData.page = service.currentPage;
+        if(service.eventType) {
+            service.requestData.event_type = service.eventType;
         }
 
+        if(xhr){xhr.abort();}
+
         xhr = $.ajax({
-            url: requestUrl,
+            url: '/dashboard/fetch',
+            data: service.requestData,
             beforeSend: function() {
                 service.stop();
                 $("#update-loader").show();
             },
             success: function(data, status, xhr) {
-                var lastPage = xhr.getResponseHeader('last_page');
-                var number_of_pages = xhr.getResponseHeader('pages');
-                $('#pagination').html(service.currentPage+'/'+number_of_pages);
                 $('#container').html(data);
-                if (lastPage == 'True') {
+                if (xhr.getResponseHeader('last_page') == 'True') {
                     service.currentPage = 1;
                 }
                 else {
@@ -61,21 +61,6 @@ function dashboardService() {
          }); 
     }
 }
-
-function filterEvents(event) {
-    if (event == 'all') {
-        $("#eventFilter").textEvents('');
-    }
-    else {
-        $("#eventFilter").text("Event : " + event.replace('_', ' '));
-    }
-
-    $("#eventFilter").val(event);
-
-    _dashboardService.reset();
-    _dashboardService.updateDashboard();
-}
-
 
 
 $(document).ready(function(){  
@@ -99,8 +84,26 @@ $(document).ready(function(){
         $('.modal-content').html('<div class="modal-loading">Loading...</div>');
         _dashboardService.start();
     });
+
+    //event filter
+    $('#eventFilter li').on('click', function() {
+        var event = $(this).attr('event');
+        if(event == 'all') {
+            $("#filterLabel").html('Events');
+            _dashboardService.eventType = null;
+        }
+        else {
+             $("#filterLabel").html("Events : " + $(this).text());
+            _dashboardService.eventType = event;
+        }
+        _dashboardService.reset();
+        _dashboardService.updateDashboard();
+    });
 });
 
+
+        //  var number_of_pages = xhr.getResponseHeader('pages');
+        //         $('#pagination').html(service.currentPage+'/'+number_of_pages);
 
 
 
