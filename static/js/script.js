@@ -1,96 +1,106 @@
 xhr = null;
 
-function startDashboardUpdateService(currentPage) {
-    updateService = new dashboardUpdateService(currentPage);
-    updateService.updateNow();
-    updateService.run();
+function startDashboardService() {
+    _dashboardService = new dashboardService();
+    _dashboardService.updateDashboard();
 }
 
-function dashboardUpdateService(currentPage) {
-    this.monitoringTimer = null;
-    this.currentPage = currentPage;
-    this.numberOfPages = Math.ceil(numberOfRepos / gridSize);
+function dashboardService() {
+    service = this;
+    service.timer = null;
+    service.currentPage = 1;
+    service.interval = interval;
 
-    this.run = function() {
-        if(this.monitoringTimer) {
-            return
-        }
-        var _this = this;
-        this.monitoringTimer = setInterval(function() {
-            _this.updateNow()} , interval);
-    }
-
-    this.pause = function() {
-        clearInterval(this.monitoringTimer);
-        this.monitoringTimer = null;
+    service.start = function() {
+        if(service.timer) {return;}
+        service.timer = setInterval(function(){
+            service.updateDashboard()} , service.interval);
     };
 
-    this.pagination = function() { 
-        if(this.currentPage > this.numberOfPages){
-            this.currentPage = 1;
-        }
-        var start = gridSize * (this.currentPage - 1);
-        if ((start + gridSize) < numberOfRepos) {
-            end = start + gridSize;
-        }
-        else {
-            end = numberOfRepos;
-        }
-        return [start, end];
-    }
+    service.stop = function() {
+        if(!service.timer) {return;}
+        clearInterval(service.timer);
+        service.timer = null;
+    };
 
-    this.updateNow = function() {
-        if(xhr){
-            xhr.abort()
+    service.reset = function() {
+        service.currentPage = 1;
+    };
+
+    service.updateDashboard = function() {
+
+        var requestUrl = "/dashboard/fetch?page=" + service.currentPage;
+        eventType = $("#eventFilter").val(); 
+
+        if(eventType) {
+            requestUrl += "&event_type=" + eventType;
         }
-        var [start, end] = this.pagination();
-        var event_type = $("#eventFilter").val();
+
         xhr = $.ajax({
-            url: "/dashboard/update?start="+start+"&end="+end+"&event_type="+event_type,
+            url: requestUrl,
             beforeSend: function() {
+                service.stop();
                 $("#update-loader").show();
             },
-            success: function(data) {
+            success: function(data, status, xhr) {
+                var lastPage = xhr.getResponseHeader('last_page');
+                var number_of_pages = xhr.getResponseHeader('pages');
+                $('#pagination').html(service.currentPage+'/'+number_of_pages);
                 $('#container').html(data);
+                if (lastPage == 'True') {
+                    service.currentPage = 1;
+                }
+                else {
+                    service.currentPage++;
+                } 
             },
             complete: function() {
+                service.start();
                 $("#update-loader").hide();
             }
-        });
-        
-        this.currentPage++;
+         }); 
     }
 }
+
+function filterEvents(event) {
+    if (event == 'all') {
+        $("#eventFilter").textEvents('');
+    }
+    else {
+        $("#eventFilter").text("Event : " + event.replace('_', ' '));
+    }
+
+    $("#eventFilter").val(event);
+
+    _dashboardService.reset();
+    _dashboardService.updateDashboard();
+}
+
+
 
 $(document).ready(function(){  
     //show modal  
     $("#modal").on("shown.bs.modal", function (e) {
-        updateService.pause();
+        _dashboardService.stop();
         var slug = e.relatedTarget.dataset.slug; 
         $.ajax({
             url: "/dashboard/modal?slug=" + slug,
             success: function (data) {
                 $('.modal-content').html(data);
+            },
+            error: function(data) {
+                var errorMsg = 'Unexpected error: ' + data.statusText;
+                $('.modal-content').html(errorMsg);
             }
         });      
     });
     //hide modal
     $("#modal").on("hidden.bs.modal", function(event){
         $('.modal-content').html('<div class="modal-loading">Loading...</div>');
-        updateService.run();
+        _dashboardService.start();
     });
-
 });
 
 
-function filterEvents(event) {
-    if (event == 'all') {
-        $("#eventFilter").text('Events');
-    }
-    else {
-        $("#eventFilter").text("Event : " + event.replace('_', ' '));
-    }
-   $("#eventFilter").val(event);
-   updateService.currentPage = 1;
-   updateService.updateNow();
-}
+
+

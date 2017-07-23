@@ -30,14 +30,14 @@ def dashboard():
 
         return redirect(url_for('dashboard'), code=302)
 
-@app.route("/dashboard/update")
-def update_dashboard():
-    start = int(request.args.get('start'))
-    end = int(request.args.get('end'))  
+
+@app.route("/dashboard/fetch")
+def fetch_dashboard_page(): 
+    page = int(request.args.get('page')) 
     event_type = request.args.get('event_type')  
-    repos = Dashboard().fetch(start, end, event_type=event_type)
+    number_of_pages, last_page, repos = Dashboard().fetch_page(page=page, event_type=event_type)
     html = render_template("repos.html", repos=repos)
-    return html
+    return Response(html, headers={'last_page':last_page, 'pages':number_of_pages}) 
 
 @app.route("/dashboard/modal")
 def repo_modal():
