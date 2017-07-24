@@ -114,6 +114,5 @@ html{font-size:1vw}
     to {left: 0; width: 100%;}
 }
 
-.btn.btn-black{background: #212F3C; color:#E5E7E9; border-radius: 15px;}
-
+.btn.btn-black{background: #212F3C; color:#E5E7E9;}
 .dropdown li {cursor: pointer}

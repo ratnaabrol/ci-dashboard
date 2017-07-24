@@ -1,8 +1,10 @@
 {% set interval = config.interval %}
 {% set grid_size = config.grid_size %}
+{% set slideshow = config.slideshow %}
 {% extends 'layout.html' %}
 
 {% block header %}
+    <title>CI Dashboard</title>
     <style>
         :root
         {
@@ -18,17 +20,16 @@
     </style>
     <script>
         interval = parseInt("{{interval}}");
+        slideShow = parseInt("{{slideshow}}");
         startDashboardService();
     </script>
 {% endblock %}
 
 {% block filter %}
-    <ul class="navbar-form navbar-left">
-        <div class="form-group">                        
-            <div class="dropdown pull-center">
-                <button id="filterLabel" class="btn btn-black" type="button" data-toggle="dropdown">					
-                    Events
-                </button>
+    <li class="navbar-left"> 
+        <ul class="navbar-form">
+            <div class="dropdown">
+                <button id="filterLabel" class="btn btn-black" type="button" data-toggle="dropdown">Events</button>
                 <ul id="eventFilter" class="dropdown-menu">
                     <li event="cron"><a>Cron</a></li>
                     <li event="pull_request"><a>Pull request</a></li>
@@ -36,13 +37,11 @@
                     <li event="api"><a>Api</a></li>
                     <li role="separator" class="divider"></li>
                     <li event="all"><a>Remove filter</a></li>
-                </ul>						  
-            </div>
-        </div>   
-    </ul>
-    <ul class="navbar-form navbar-left">
-        <button id="pagination" class="btn btn-black" type="button"></button> 
-    </ul>
+                </ul>
+            </div>   
+        </ul>                  
+    </li>
+    <li><a id="pagination"></a></li>
 {% endblock %}
 
 {% block content %}

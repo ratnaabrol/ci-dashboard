@@ -31,6 +31,7 @@ function dashboardService() {
     };
 
     service.updateDashboard = function() {
+
         service.requestData.page = service.currentPage;
         if(service.eventType) {
             service.requestData.event_type = service.eventType;
@@ -47,7 +48,7 @@ function dashboardService() {
             },
             success: function(data, status, xhr) {
                 $('#container').html(data);
-                $('#pagination').html(service.currentPage + '/' + xhr.getResponseHeader('pages'));
+                $('#pagination').html('Page ' +  service.currentPage + ' of ' + xhr.getResponseHeader('pages'));
                 
                 if (xhr.getResponseHeader('last_page') == 'True') {
                     service.currentPage = 1;
@@ -102,10 +103,6 @@ $(document).ready(function(){
         _dashboardService.updateDashboard();
     });
 });
-
-
-        //  var number_of_pages = xhr.getResponseHeader('pages');
-        //         
 
 
 

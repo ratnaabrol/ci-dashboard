@@ -26,8 +26,11 @@ class Repository(Clients):
             return []
         
     def branches(self):
-        response = self._Clients__github_client.branches(self.slug)
-        branches = [branch['name'] for branch in response.json()]
+        try:
+            response = self._Clients__github_client.branches(self.slug)
+            branches = [branch['name'] for branch in response.json()]
+        except:
+            branches = []
         return branches
 
     def trigger_build(self, branch):
