@@ -76,28 +76,4 @@ class Dashboard:
 
         for thread in threads_list:
             thread.join()
-
-
-
-    # def fetch_page(self, page, event_type):
-    #     last_page = False
-    #     start = (page - 1) * self.repos_per_page
-    #     end = start + self.repos_per_page
-        
-    #     if event_type:
-    #         all_repos = self.fetch(event_type=event_type)
-    #         all_repos = [repo for repo in all_repos if repo['last_build']]
-    #         number_of_repos = len(all_repos)  
-    #         end = min(end, number_of_repos)       
-    #         current_page_repos = all_repos[start:end]         
-    #     else:
-    #         number_of_repos = len(self.repos)
-    #         end = min(end, number_of_repos)
-    #         current_page_repos = self.fetch(start=start, end=end)
-
-    #     if end >= number_of_repos:
-    #         last_page = True 
-
-    #     number_of_pages = math.ceil(number_of_repos/self.repos_per_page)
-        
-    #     return number_of_pages, last_page, current_page_repos
+            
