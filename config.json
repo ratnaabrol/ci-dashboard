@@ -1,8 +1,9 @@
 {
-    "columns": 3,
     "github_token": "",
+    "grid_size": 3,
     "interval": 10000,
     "repos": [],
     "threads": 20,
-    "travis_token": ""
+    "travis_token": "",
+    "view_mode": "onepage"
 }

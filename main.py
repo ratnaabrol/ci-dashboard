@@ -32,17 +32,11 @@ def dashboard():
 
 
 @app.route("/dashboard/fetch")
-def fetch_dashboard_page(): 
-    page = request.args.get('page')
-    event_type = request.args.get('event_type')
-    if page:
-        number_of_pages, last_page, repos = Dashboard().fetch_page(page=page, event_type=event_type)
-        html = render_template("repos.html", repos=repos)
-        return Response(html, headers={'last_page':last_page, 'pages':number_of_pages})
-    else:
-        repos = Dashboard().fetch()
-        html = render_template("repos.html", repos=repos)
-        return html
+def fetch_dashboard(): 
+    params = request.args.to_dict()
+    headers, repos = Dashboard().fetch(** params)
+    html = render_template("repos.html", repos=repos)
+    return Response(html, headers=headers)
 
 @app.route("/dashboard/modal")
 def repo_modal():
@@ -66,11 +60,13 @@ def settings():
             threads = int(request.form.get('threads'))
             grid_size = int(request.form.get('grid_size'))
             interval = int(request.form.get('interval'))
+            view_mode = request.form.get('view_mode')
             tools.save_config(threads=threads, 
                               grid_size=grid_size, 
                               interval=interval, 
                               travis_token=travis_token, 
-                              github_token=github_token)
+                              github_token=github_token,
+                              view_mode=view_mode)
 
         elif 'repositories' in request.form:
             selected_repos = request.form.getlist("repos")

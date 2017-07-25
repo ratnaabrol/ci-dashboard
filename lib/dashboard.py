@@ -12,7 +12,42 @@ class Dashboard:
         self.grid_size = self.__config['grid_size']
         self.repos_per_page = int(math.pow(self.grid_size, 2))
 
-    def fetch(self, start=0, end=-1, **kwargs):
+
+    def fetch(self, **kwargs):
+        if 'page' in kwargs:
+            page = int(kwargs['page'])
+            last_page = False
+            start = (page - 1) * self.repos_per_page
+            end = start + self.repos_per_page
+
+            if 'event_type' in kwargs:
+                all_repos = self.fetch_builds(event_type=kwargs['event_type'])
+                all_repos = [repo for repo in all_repos if repo['last_build']]
+                number_of_repos = len(all_repos)  
+                end = min(end, number_of_repos)       
+                repos = all_repos[start:end]         
+            else:
+                number_of_repos = len(self.repos)
+                end = min(end, number_of_repos)
+                repos = self.fetch_builds(start=start, end=end)
+
+            if end >= number_of_repos:
+                last_page = True 
+
+            pages = math.ceil(number_of_repos / self.repos_per_page)
+            headers = {'pages': pages, 'last_page': last_page}
+            return headers, repos
+
+        else:
+            repos = self.fetch_builds(**kwargs)
+            if 'event_type' in kwargs:
+                repos = [repo for repo in repos if repo['last_build']]
+                
+            headers = {}
+            return headers, repos
+            
+
+    def fetch_builds(self, start=0, end=-1, **kwargs):
         self.__dashboard_data = []
         self.__repos_queue = queue.Queue()
 
@@ -22,30 +57,6 @@ class Dashboard:
         self.__start_job(job=self.__collect_data, kwargs=kwargs)
         sorted_data = sorted(self.__dashboard_data, key=lambda k: k['info']['slug'])
         return sorted_data
-
-
-    def fetch_page(self, page, event_type):
-        last_page = False
-        start = (page - 1) * self.repos_per_page
-        end = start + self.repos_per_page
-        
-        if event_type:
-            all_repos = self.fetch(event_type=event_type)
-            all_repos = [repo for repo in all_repos if repo['last_build']]
-            number_of_repos = len(all_repos)  
-            end = min(end, number_of_repos)       
-            current_page_repos = all_repos[start:end]         
-        else:
-            number_of_repos = len(self.repos)
-            end = min(end, number_of_repos)
-            current_page_repos = self.fetch(start=start, end=end)
-
-        if end >= number_of_repos:
-            last_page = True 
-
-        number_of_pages = math.ceil(number_of_repos/self.repos_per_page)
-        
-        return number_of_pages, last_page, current_page_repos
 
 
     def __collect_data(self, **kwargs):
@@ -65,3 +76,28 @@ class Dashboard:
 
         for thread in threads_list:
             thread.join()
+
+
+
+    # def fetch_page(self, page, event_type):
+    #     last_page = False
+    #     start = (page - 1) * self.repos_per_page
+    #     end = start + self.repos_per_page
+        
+    #     if event_type:
+    #         all_repos = self.fetch(event_type=event_type)
+    #         all_repos = [repo for repo in all_repos if repo['last_build']]
+    #         number_of_repos = len(all_repos)  
+    #         end = min(end, number_of_repos)       
+    #         current_page_repos = all_repos[start:end]         
+    #     else:
+    #         number_of_repos = len(self.repos)
+    #         end = min(end, number_of_repos)
+    #         current_page_repos = self.fetch(start=start, end=end)
+
+    #     if end >= number_of_repos:
+    #         last_page = True 
+
+    #     number_of_pages = math.ceil(number_of_repos/self.repos_per_page)
+        
+    #     return number_of_pages, last_page, current_page_repos

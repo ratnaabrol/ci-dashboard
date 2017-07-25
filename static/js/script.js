@@ -10,6 +10,7 @@ function dashboardService() {
     service.timer = null;
     service.currentPage = 1;
     service.eventType = null;
+    service.viewMode = viewMode;
     service.interval = interval;
     service.requestData = Object();
 
@@ -20,6 +21,7 @@ function dashboardService() {
     };
 
     service.stop = function() {
+        if(xhr){xhr.abort();}
         if(!service.timer) {return;}
         clearInterval(service.timer);
         service.timer = null;
@@ -32,13 +34,14 @@ function dashboardService() {
 
     service.updateDashboard = function() {
 
-        service.requestData.page = service.currentPage;
+        if(service.viewMode == 'slideshow') {
+            service.requestData.page = service.currentPage;
+        }
+
         if(service.eventType) {
             service.requestData.event_type = service.eventType;
         }
-
-        if(xhr){xhr.abort();}
-
+        
         xhr = $.ajax({
             url: '/dashboard/fetch',
             data: service.requestData,
@@ -48,14 +51,17 @@ function dashboardService() {
             },
             success: function(data, status, xhr) {
                 $('#container').html(data);
-                $('#pagination').html('Page ' +  service.currentPage + ' of ' + xhr.getResponseHeader('pages'));
-                
-                if (xhr.getResponseHeader('last_page') == 'True') {
-                    service.currentPage = 1;
+                if(service.viewMode == 'slideshow'){
+                    var number_of_pages = xhr.getResponseHeader('pages');
+                    $('#pagination').html('Page ' +  service.currentPage + ' of ' + number_of_pages);
+                    
+                    if (xhr.getResponseHeader('last_page') == 'True') {
+                        service.currentPage = 1;
+                    }
+                    else {
+                        service.currentPage++;
+                    } 
                 }
-                else {
-                    service.currentPage++;
-                } 
             },
             complete: function() {
                 service.start();
@@ -64,7 +70,6 @@ function dashboardService() {
          }); 
     }
 }
-
 
 $(document).ready(function(){  
     //show modal  
@@ -103,6 +108,3 @@ $(document).ready(function(){
         _dashboardService.updateDashboard();
     });
 });
-
-
-

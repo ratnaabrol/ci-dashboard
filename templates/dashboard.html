@@ -1,6 +1,6 @@
 {% set interval = config.interval %}
 {% set grid_size = config.grid_size %}
-{% set slideshow = config.slideshow %}
+{% set view_mode = config.view_mode %}
 {% extends 'layout.html' %}
 
 {% block header %}
@@ -20,7 +20,7 @@
     </style>
     <script>
         interval = parseInt("{{interval}}");
-        slideShow = parseInt("{{slideshow}}");
+        viewMode = "{{view_mode}}";
         startDashboardService();
     </script>
 {% endblock %}

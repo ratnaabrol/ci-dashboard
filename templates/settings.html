@@ -31,17 +31,24 @@
                 <input type="text" class="form-control" name="github_token" value="{{config.github_token}}" placeholder="Github token (Optional)">
             </div>
             <div class="form-group row">
-                <div class="col-xs-4">
+                <div class="col-xs-3">
                     <label for="columns">Grid size</label>
                     <input type="number" class="form-control" name="grid_size" value="{{config.grid_size}}">
                 </div>
-                <div class="col-xs-4">
+                <div class="col-xs-3">
                     <label for="interval">Interval (ms)</label>
                     <input type="number" class="form-control" name="interval" value="{{config.interval}}">
                 </div>
-                <div class="col-xs-4">
+                <div class="col-xs-3">
                     <label for="threads">Threads</label>
                     <input type="number" class="form-control" name="threads" value="{{config.threads}}">
+                </div>
+                <div class="col-xs-3">
+                    <label for="view_mode">View mode</label>
+                    <select class="form-control" name="view_mode">
+                        <option value="onepage"  {{'selected' if config.view_mode =='onepage'}}>One page</option> 
+                        <option value="slideshow" {{'selected' if config.view_mode =='slideshow'}}>Slide show</option>                       
+                    </select>
                 </div>
             </div>
             <div class="form-group row">
