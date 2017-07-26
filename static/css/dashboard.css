@@ -84,27 +84,6 @@ html{font-size:1vw}
 .panel.canceled{background-color:#5D6D7E;}
 .panel.None{background-color:#A04000;}
 
-
-.filter
-{
-    color:#E5E7E9;
-    border-radius: 5px;
-    background: rgba(0,0,0,0);
-    border:none;
-    text-align: center;
-    padding: 7px;
-    width:auto;
-    border-radius: 2px;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-}
-
-.filter option
-{
-    background: #fff;
-    color:#000;
-}
-
 .bars-container {
   position: absolute;
   width: 100%;
@@ -135,6 +114,5 @@ html{font-size:1vw}
     to {left: 0; width: 100%;}
 }
 
-.btn.btn-black{background: #212F3C; color:#E5E7E9; border-radius: 15px;}
-
+.btn.btn-black{background: #212F3C; color:#E5E7E9;}
 .dropdown li {cursor: pointer}

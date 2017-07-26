@@ -1,31 +1,29 @@
-import json, time, os
+import json, time
+from os import path
 from datetime import datetime
 
 class Tools:
     def __init__(self):
-        path = os.path.dirname(__file__)
-        self.__config_file = os.path.join(path, "config.json")
+        config_path = path.dirname(path.dirname(path.abspath(__file__)))
+        self.__config_file = path.join(config_path, "config.json")
     
-    def read_config(self):
+    def read_config(self, protected=False):
         with open(self.__config_file, 'r') as f:
-            data = json.load(f)
-        return data
+            config = json.load(f)
 
-    def read_unprotected_config(self):
-        with open(self.__config_file, 'r') as f:
-            data = json.load(f)
-        
-        travis_token = data['travis_token']
-        github_token = data['github_token']
-        data['travis_token'] = travis_token[:3] + (len(travis_token) - 3) * '*'
-        data['github_token'] = github_token[:3] + (len(github_token) - 3) * '*'
-
-        return data
+        if protected:
+            travis_token = config['travis_token']
+            github_token = config['github_token']
+            config['travis_token'] = travis_token[:3] + (len(travis_token)-3) * '*'
+            config['github_token'] = github_token[:3] + (len(github_token)-3) * '*'
+            
+        return config
 
     def save_config(self, **kwargs):
-        config = self.read_config()
-        
+        config = self.read_config()  
         for key, value in kwargs.items():
+            if key in ['travis_token', 'github_token'] and '*' in value:
+                continue
             config[key] = value  
 
         with open(self.__config_file , 'w') as f:

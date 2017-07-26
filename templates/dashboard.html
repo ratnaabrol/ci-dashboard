@@ -1,45 +1,47 @@
-{% set interval = config.interval%}
-{% set columns = config.columns %}
-
-<script>
-    interval = "{{interval}}";
-</script>
-
+{% set interval = config.interval %}
+{% set grid_size = config.grid_size %}
+{% set view_mode = config.view_mode %}
 {% extends 'layout.html' %}
+
 {% block header %}
+    <title>CI Dashboard</title>
     <style>
         :root
         {
-            --panel-width: calc({{100/columns}}%);
-            --panel-height: calc({{100*1.1/columns}}%);
-            --repo-slug: calc({{4.5/columns}}rem);
-            --event-title: calc({{5/columns}}rem);
-            --footer-text: calc({{3.3/columns}}rem); 
-            --event-details-text: calc({{3.6/columns}}rem);
-            --event-details-image: calc({{4/columns}}rem);  
+            --panel-width: calc({{100/grid_size}}%);
+            --panel-height: calc({{100/grid_size}}%);
+            --repo-slug: calc({{4.5/grid_size}}rem);
+            --event-title: calc({{5/grid_size}}rem);
+            --footer-text: calc({{3.3/grid_size}}rem); 
+            --event-details-text: calc({{3.6/grid_size}}rem);
+            --event-details-image: calc({{4/grid_size}}rem);  
         }
         body{background: #000}
     </style>
+    <script>
+        interval = parseInt("{{interval}}");
+        viewMode = "{{view_mode}}";
+        startDashboardService();
+    </script>
 {% endblock %}
 
 {% block filter %}
-<ul class="navbar-form navbar-left">
-    <div class="form-group">                        
-        <div class="dropdown pull-center">
-            <button id="event_filter" class="btn btn-black dropdown-toggle" type="button" data-toggle="dropdown" value="all">					
-                Events
-            </button>
-            <ul class="dropdown-menu">
-                <li><a onclick="filter_events('cron');">ِCron</a></li>
-                <li><a onclick="filter_events('pull_request');">ِPull request</a></li>
-                <li><a onclick="filter_events('push');">ِPush</a></li>
-                <li><a onclick="filter_events('api');">ِApi</a></li>
-                <li role="separator" class="divider"></li>
-                <li><a onclick="filter_events('all');">ِRemove filter</a></li>
-            </ul>						  
-        </div>
-    </div>    
-</ul>
+    <li class="navbar-left"> 
+        <ul class="navbar-form">
+            <div class="dropdown">
+                <button id="filterLabel" class="btn btn-black" type="button" data-toggle="dropdown">Events</button>
+                <ul id="eventFilter" class="dropdown-menu">
+                    <li event="cron"><a>Cron</a></li>
+                    <li event="pull_request"><a>Pull request</a></li>
+                    <li event="push"><a>Push</a></li>
+                    <li event="api"><a>Api</a></li>
+                    <li role="separator" class="divider"></li>
+                    <li event="all"><a>Remove filter</a></li>
+                </ul>
+            </div>   
+        </ul>                  
+    </li>
+    <li><a id="pagination"></a></li>
 {% endblock %}
 
 {% block content %}
@@ -49,7 +51,7 @@
         </div>
     </div>
 
-    <div class="modal fade" id="actions" role="dialog">
+    <div class="modal fade" id="modal" role="dialog">
         <div class="modal-dialog" style="width:35%">
             <div class="modal-content">
                 <div class="modal-loading">

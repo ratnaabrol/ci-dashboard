@@ -1,14 +1,14 @@
 import requests
 
 class Travis:
-    def __init__(self, token):
+    def __init__(self, travis_token):
         self.session = requests.Session()
         self.session.headers = {
-            'Accept':'MyClient/1.0.0',
+            'Accept':'application/vnd.travis-ci.2+json',
             'User-Agent':'MyClient/1.0.0',
             'Content-Type':'application/json',
             'Travis-API-Version':'3',
-            "Authorization":'token {}'.format(token)
+            'Authorization':'token {}'.format(travis_token)
         }
         self.base_url = 'https://api.travis-ci.org'
         
@@ -18,15 +18,9 @@ class Travis:
             response = self.session.get(url, params=params)
         elif method == 'post':
             response = self.session.post(url, params=params, json=data)
-        else:
-            raise RuntimeError('Invalid request method')
 
         response.raise_for_status()
-        
         return response
-
-    def authorize(self, token):
-        self.session.headers['Authorization'] = 'token {}'.format(token)
 
     def user(self):
         url = '/user'

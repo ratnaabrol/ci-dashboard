@@ -1,9 +1,13 @@
 {% extends 'layout.html' %}
 
+{% block header %}
+    <title>CI Dashboard - Settings</title>
+{% endblock %}
+
 {% block content %}
     <div class="container" style="width:70%">
-        {% if response != None %}
-            {% if response %}
+        {% if success != None %}
+            {% if success %}
                 <div class="alert alert-success fade in">
                     <a href="#" class="close" data-dismiss="alert">&times;</a>
                     <strong>Success</strong> Settings updated successfully
@@ -27,15 +31,22 @@
                 <input type="text" class="form-control" name="github_token" value="{{config.github_token}}" placeholder="Github token (Optional)">
             </div>
             <div class="form-group row">
-                <div class="col-xs-4">
-                    <label for="columns">Columns</label>
-                    <input type="number" class="form-control" name="columns" value="{{config.columns}}">
+                <div class="col-xs-3">
+                    <label for="columns">Grid size</label>
+                    <input type="number" class="form-control" name="grid_size" value="{{config.grid_size}}">
                 </div>
-                <div class="col-xs-4">
+                <div class="col-xs-3">
+                    <label for="view_mode">View mode</label>
+                    <select class="form-control" name="view_mode">
+                        <option value="onepage"  {{'selected' if config.view_mode =='onepage'}}>One page</option>
+                        <option value="slideshow" {{'selected' if config.view_mode =='slideshow'}}>Slide show</option>
+                    </select>
+                </div>
+                <div class="col-xs-3">
                     <label for="interval">Interval (ms)</label>
                     <input type="number" class="form-control" name="interval" value="{{config.interval}}">
                 </div>
-                <div class="col-xs-4">
+                <div class="col-xs-3">
                     <label for="threads">Threads</label>
                     <input type="number" class="form-control" name="threads" value="{{config.threads}}">
                 </div>
@@ -52,8 +63,8 @@
                 No repositories were found
             {% else %}
                 {% for repo in repos %}
-                <input type="checkbox" value="{{repo.slug}}" id="{{repo.slug}}" name="repos" {{'checked' if repo.slug in config.repos}}>
-                <label class="repo-label" for="{{repo.slug}}">{{repo.slug}}</label>
+                <input type="checkbox" value="{{repo}}" id="{{repo}}" name="repos" {{'checked' if repo in config.repos}}>
+                <label class="repo-label" for="{{repo}}">{{repo}}</label>
                 {% endfor %}
                 <br><br>
                 <div class="form-group row">

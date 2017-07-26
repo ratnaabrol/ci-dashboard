@@ -26,9 +26,11 @@ cidashboard start --host {{host}} --port {{port}}
 
     - ```interval ```  : update interval in millisecond.
 
-    - ```columns ```    : number of columns to be shown in the dashboard.
+    - ```Grid size```  : number of columns and rows to be shown in the dashboard.
+    
+    - ```View mode```  : **onepage** or **slideshow**.
 
-    - ```threads```     : number of threads to fetch repositories info in the same time.
+    - ```threads```    : number of threads to fetch repositories info in the same time.
 
 
 #### Open dashboard 
