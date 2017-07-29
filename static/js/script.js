@@ -53,7 +53,7 @@ function dashboardService() {
                 $('#container').html(data);
                 if(service.viewMode == 'slideshow'){
                     var number_of_pages = xhr.getResponseHeader('pages');
-                    $('#pagination').html('Page ' +  service.currentPage + ' of ' + number_of_pages);
+                    // $('#pagination').html('Page ' +  service.currentPage + ' of ' + number_of_pages);
                     
                     if (xhr.getResponseHeader('last_page') == 'True') {
                         service.currentPage = 1;

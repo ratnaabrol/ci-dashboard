@@ -16,31 +16,47 @@
         <nav class="navbar navbar-inverse" style="border-radius:0px;">
             <div class="container">
                 <div class="navbar-header">
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    </button>    
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="/">CI Dashboard</a>
                 </div>
-                <div class="navbar-collapse collapse">
-                    <ul class="nav navbar-nav">
 
-                         <li class="navbar-left">
-                            <a class="navbar-brand" href="/">CI Dashboard</a>
+                <!--event filter button-->
+                <ul class="nav navbar-nav navbar-left">
+                    {% block filter %} {% endblock %}
+                </ul>
+
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="/dashboard">Dashboard</a></li>
+                    {% if userInfo.member %}
+                        <li><a href="/settings">Settings</a></li>
+                    {% endif %}
+                    <li><a href="https://github.com/ahmedelsayed-93/ci-dashboard">Github</a></li>
+
+                    <!--login button-->
+                    {% if userInfo %}
+                        <li class="dropdown">
+                            <a class="dropdown-toggle" data-toggle="dropdown" role="button">
+                                <span class="glyphicon glyphicon-user"></span>
+                                {{userInfo.username}}
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a href="/logout"><span class="glyphicon glyphicon-log-out"></span>Logout</a>
+                                </li>
+                            </ul>
                         </li>
-                  
-                        {% block filter %} {% endblock %}
-                        
-                        <li class="navbar-right"><a href="https://github.com/ahmedelsayed-93/ci-dashboard">Github</a></li>
-                        <li class="navbar-right"><a href="/settings">Settings</a></li>
-                        <li class="navbar-right"><a href="/dashboard">Dashboard</a></li>
-                    </ul>
-                </div>
-            </div>
-            <div id="update-loader" class="bars-container">
-                <div class="bar"></div>
-                <div class="bar"></div>
-                <div class="bar"></div>
+                    {% else %}
+                        <li>
+                            <a href="/auth">
+                                <span class="glyphicon glyphicon-lock"></span>Login
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>             
             </div>
         </nav>
 
