@@ -12,16 +12,15 @@ class Dashboard:
         self.grid_size = self.__config['grid_size']
         self.repos_per_page = int(math.pow(self.grid_size, 2))
 
-
     def fetch(self, **kwargs):
         if 'page' in kwargs:
-            page = int(kwargs['page'])
+            page = int(kwargs.pop('page'))
             last_page = False
             start = (page - 1) * self.repos_per_page
             end = start + self.repos_per_page
 
-            if 'event_type' in kwargs:
-                all_repos = self.fetch_builds(event_type=kwargs['event_type'])
+            if kwargs:
+                all_repos = self.fetch_builds(** kwargs)
                 all_repos = [repo for repo in all_repos if repo['last_build']]
                 number_of_repos = len(all_repos)  
                 end = min(end, number_of_repos)       
@@ -40,7 +39,7 @@ class Dashboard:
 
         else:
             repos = self.fetch_builds(**kwargs)
-            if 'event_type' in kwargs:
+            if kwargs:
                 repos = [repo for repo in repos if repo['last_build']]
                 
             headers = {}

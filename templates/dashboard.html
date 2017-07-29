@@ -29,14 +29,16 @@
     <li class="navbar-left"> 
         <ul class="navbar-form">
             <div class="dropdown">
-                <button id="filterLabel" class="btn btn-black" type="button" data-toggle="dropdown">Events</button>
-                <ul id="eventFilter" class="dropdown-menu">
-                    <li event="cron"><a>Cron</a></li>
-                    <li event="pull_request"><a>Pull request</a></li>
-                    <li event="push"><a>Push</a></li>
-                    <li event="api"><a>Api</a></li>
+                <button class="btn btn-black" type="button" data-toggle="dropdown">Filter</button>
+                <ul id="filter" class="dropdown-menu">
+                    <li class="disabled"><a><strong>Events</strong></a></li>
+                    <li value="cron"><a><input name="events" value="cron" type="checkbox"/>&nbsp;Cron</a></li>
+                    <li value="pull_request"><a><input name="events" value="pull_request" type="checkbox"/>&nbsp;Pull request</a></li>
+                    <li value="push"><a><input name="events" value="push" type="checkbox"/>&nbsp;Push</a></li>
+                    <li value="api"><a><input name="events" value="api" type="checkbox"/>&nbsp;Api</a></li>
                     <li role="separator" class="divider"></li>
-                    <li event="all"><a>Remove filter</a></li>
+                    <li class="disabled"><a><strong>Branches</strong></a></li>
+                    <li value="api"><a><input type="checkbox" name="default_branch"/>&nbsp;Default branches</a></li>
                 </ul>
             </div>   
         </ul>                  

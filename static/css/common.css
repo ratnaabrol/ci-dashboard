@@ -71,9 +71,9 @@ code
     cursor: pointer;
 }
 
-input[type=checkbox]{display: none;}
+.repo-selector {display: none;}
 
-input[type=checkbox]:checked + .repo-label  
+.repo-selector:checked + .repo-label  
 {
     color:#fff;
     background: #2874A6;
