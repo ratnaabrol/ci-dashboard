@@ -15,7 +15,6 @@ curl -sL https://raw.github.com/ahmedelsayed-93/ci-dashboard/itsyouonline-auth/s
 - From you organization settings page create API key.
 - Set the callback url to {{http or https}}://{{host}}:{{port}}/callback, for example:
     - ```https://travis-dash.gig.tech/callback```
-    - ```http://127.0.0.1:5000/callback```
 
 #### Start server
 ```bash
