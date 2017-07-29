@@ -32,7 +32,7 @@ Arguments
 
 #### Set your configration
 
-- Go to **Settings** page ```http:/{host}:{port}/settings```, and set the following parameters :
+- Go to **Settings** page ```http://{host}:{port}/settings```, and set the following parameters :
 
     - ```Travis token```: your travis token. [need help?](https://docs.travis-ci.com/api/#authentication)
 
