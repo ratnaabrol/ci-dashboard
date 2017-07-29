@@ -11,7 +11,7 @@ curl -sL https://raw.github.com/ahmedelsayed-93/ci-dashboard/master/scripts/inst
 
 #### Start server
 ```bash
-cidashboard start --host {{host}} --port {{port}}
+cidashboard start --host {host} --port {port} --clientid {clientid} --clientsecret {clientsecret} --callbackurl {callbackurl}
 ```
 > CI-Dashboard server will be started in a new tmux session named [cidashboard].
 

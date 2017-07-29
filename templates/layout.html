@@ -29,9 +29,13 @@
                     {% block filter %} {% endblock %}
                 </ul>
 
+                <ul class="nav navbar-nav navbar-left">  
+                    <p id="pagination"></p>
+                </ul>  
+
                 <ul class="nav navbar-nav navbar-right">
                     <li><a href="/dashboard">Dashboard</a></li>
-                    {% if userInfo.member %}
+                    {% if userInfo.is_member_of_org %}
                         <li><a href="/settings">Settings</a></li>
                     {% endif %}
                     <li><a href="https://github.com/ahmedelsayed-93/ci-dashboard">Github</a></li>
@@ -57,6 +61,11 @@
                         </li>
                     {% endif %}
                 </ul>             
+            </div>
+            <div id="update-loader" class="bars-container">
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
             </div>
         </nav>
 

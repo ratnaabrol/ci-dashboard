@@ -1,7 +1,6 @@
 from flask import Response, redirect, url_for
 
 class HttpStatus:
-    
     def Ok(self, data=None, contentType='application/json'):
         return Response(data, status=200, mimetype=contentType)
     

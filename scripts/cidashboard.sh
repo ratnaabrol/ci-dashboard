@@ -13,22 +13,21 @@ help() {
         options:
         --host : the hostname to listen on, default 127.0.0.1
         --port : the port of the webserver, default 5000
+        --clientid : itsyouonline organization client id
+        --clientsecret : itsyouonline organization client secret
+        --callbackurl : {{http or https}}://{{host}}:{{port}}/callback
     stop   :    stop the server.
     update :    update software.
     "
 }
 
 startServer() {
-
-    if tmux new -d -s cidashboard python3 ${path}/ci-dashboard/main.py --host ${host} --port ${port} ; then
-        sleep 2
-        if curl -I http://${host}:${port} &> /dev/null; then
-            echo "CI-Dashboard server is started in tmux session [cidashboard].
-            Server url : http://${host}:${port}
-            Note: to open the session type 'tmux a -t cidashboard' in the terminal."
-        else
-            echo "Can't start CI-Dashboard server"; exit 1
-        fi
+    tmux new -d -s cidashboard python3 ${path}/ci-dashboard/main.py --host ${host} --port ${port}
+    sleep 2
+    if curl -I http://${host}:${port} &> /dev/null; then
+        echo "CI-Dashboard server is started in tmux session [cidashboard].
+        Server url : http://${host}:${port}
+        Note: to open the session type 'tmux a -t cidashboard' in the terminal."
     else
         echo "Can't start CI-Dashboard server"; exit 1
     fi
@@ -65,6 +64,9 @@ elif [ ${command} == 'start' ]; then
         case "$1" in
             -h | --host ) host="$2"; shift 2;;
             -p | --port ) port="$2"; shift 2;;
+            -i | --clientid ) clientid="$2"; shift 2;;
+            -s | --clientsecret ) clientsecret="$2"; shift 2;;
+            -c | --callbackurl ) callbackurl="$2"; shift 2;;
             -- ) shift; break ;;
             -* ) echo "Unrecognized option $1"; exit 1;;
             * ) break;;

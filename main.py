@@ -1,27 +1,26 @@
-from flask import Flask, request, redirect, render_template, url_for, Response, session, g
+from flask import Flask, request, redirect, render_template, url_for, Response, session
 import argparse, json, requests, os, uuid
+from datetime import timedelta
 from lib.tools import Tools
 from lib.dashboard import Dashboard
 from lib.repositories import Repositories
 from lib.clients.travis import Travis
-from lib.authorizer import auth
+from lib.authenticator import Authenticator
 from lib.http import HttpStatus
-
 
 app = Flask(__name__)
 app.secret_key = uuid.uuid4().hex
-
-client_id = 'travis-dashboard'
-client_secret = ''
-redirect_url = 'http://127.0.0.1:5000/callback'
-
 tools = Tools()
 httpStatus = HttpStatus()
-authorizer = auth(client_id, client_secret, redirect_url)
+
+client_id = os.environ['clientid']
+client_secret = os.environ['clientsecret']
+callback_url = os.environ['callbackurl']
+auth = Authenticator(client_id, client_secret, callback_url)
 
 @app.context_processor
-def user_auth_info():
-    userInfo = authorizer.is_authorized_user()
+def context_processor():
+    userInfo = auth.is_authorized_user()
     config = tools.read_config(protected=True)
     return dict(userInfo=userInfo, config=config)
 
@@ -31,7 +30,7 @@ def dashboard():
     return render_template("dashboard.html")
 
 @app.route("/dashboard", methods=["POST"])
-@authorizer.member_required
+@auth.required_member_of_org
 def build_actions():
     slug = request.form.get('repo')
     if 'trigger-build' in request.form:
@@ -57,7 +56,7 @@ def fetch_dashboard():
     return Response(html, headers=headers)
 
 @app.route("/dashboard/modal")
-@authorizer.member_required
+@auth.required_member_of_org
 def repo_modal():
     slug = request.args.get('slug')
     repo = Repositories().repo(slug)
@@ -70,7 +69,7 @@ def repo_modal():
     return html
 
 @app.route("/settings", methods=['GET', 'POST'])
-@authorizer.member_required
+@auth.required_member_of_org
 def settings():
     success = None
     if request.method == 'POST':    
@@ -103,16 +102,16 @@ def itsyouonline_login():
 
 @app.route("/auth")
 def itsyouonline_auth():
-    return authorizer.itsyouonline_auth()
+    return auth.itsyouonline_auth()
 
 @app.route("/callback")
 def itsyouonline_callback():
     code = request.args.get('code') 
     state = request.args.get('state')
-    if not code or state != authorizer.state:
+    if not code or state != auth.state:
         return httpStatus.BadRequest()
 
-    authorizer.authorize_user(code, state)
+    auth.authorize_user(code, state)
     return redirect(url_for('dashboard'), code=302)
 
 @app.route("/logout")
@@ -128,11 +127,5 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--host", type=str, default='127.0.0.1', help="the hostname to listen on")
     parser.add_argument("--port", type=int, default=5000, help="the port of the webserver")
-    parser.add_argument("--clientid", type=str)
-    parser.add_argument("--clientsecret", type=str)
-    parser.add_argument("--org", type=str)
     args = parser.parse_args()
-
     app.run(host=args.host, port=args.port, debug=True, threaded=True)
-
-

@@ -82,3 +82,8 @@ input[type=checkbox]:checked + .repo-label
 .icon{width: var(--event-details-image);}
 
 .glyphicon{margin-right:5px;}
+
+#pagination
+{
+    font-size: 13px;
+}
