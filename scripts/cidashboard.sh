@@ -29,21 +29,21 @@ startServer() {
         Server url : http://${host}:${port}
         Note: to open the session type 'tmux a -t cidashboard' in the terminal."
     else
-        echo "Can't start CI-Dashboard server"; exit 1
+        echo "Can't start server"; exit 1
     fi
 }
 
 stopRunningServer() {
     if tmux kill-session -t cidashboard &> /dev/null; then
-        echo "CI-Dashboard server is stopped"
+        echo "Server is stopped"
     else
-        echo "Can't stop CI-Dashboard server"; exit 1
+        echo "No running server was found"; exit 1
     fi
 }
 
 updateSoftware() {
     if git -C ${path}/ci-dashboard/ pull ; then
-        echo "CI-Dashboard server is updated"
+        echo "Server is updated"
     else
         echo "Can't update CI-Dashboard"; exit 1
     fi

@@ -1,4 +1,4 @@
-branch=${1:-master}
+branch=${1:-itsyouonline-auth}
 path=${2:-/opt}
 
 echo "Installing dependencies..."
@@ -21,6 +21,6 @@ cp ${path}/ci-dashboard/scripts/cidashboard.sh /usr/bin/cidashboard
 chmod +x /usr/bin/cidashboard
 echo ${path} > /etc/ci-dashboard.config 
 
-echo "Done, for help type : 'cidashboard help in terminal'"
+echo "Done, for help type : 'cidashboard help'"
 
 
