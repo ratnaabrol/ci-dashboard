@@ -5,16 +5,9 @@ Travis CI builds dashboard written in python
 
 ### Installation
 ```bash
-curl -sL https://raw.github.com/ahmedelsayed-93/ci-dashboard/itsyouonline-auth/scripts/install.sh | sudo bash 
+curl -sL https://raw.github.com/ahmedelsayed-93/ci-dashboard/master/scripts/install.sh | sudo bash 
 ```
 ### Getting started
-
-#### Itsyou.online
-- Create account on [itsyou.online](http://itsyou.online)
-- Create a new organization.
-- From you organization settings page create API key.
-- Set the callback url to {{http or https}}://{{host}}:{{port}}/callback, for example:
-    - ```https://travis-dash.gig.tech/callback```
 
 #### Start server
 ```bash
@@ -22,9 +15,6 @@ cidashboard start [arguments]
 Arguments
     --host          :   the hostname to listen on, default 127.0.0.1
     --port          :   the port of the webserver, default 5000
-    --clientid      :   itsyouonline organization global id 
-    --clientsecret  :   itsyouonline organization client secret
-    --callbackurl   :   callback url {{http or https}}://{{host}}:{{port}}/callback
 ```
 
 > CI-Dashboard server will be started in a new tmux session named [cidashboard].
