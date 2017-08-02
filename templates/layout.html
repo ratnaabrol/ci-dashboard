@@ -35,31 +35,8 @@
 
                 <ul class="nav navbar-nav navbar-right">
                     <li><a href="/dashboard">Dashboard</a></li>
-                    {% if userInfo.is_member_of_org %}
-                        <li><a href="/settings">Settings</a></li>
-                    {% endif %}
+                    <li><a href="/settings">Settings</a></li>
                     <li><a href="https://github.com/ahmedelsayed-93/ci-dashboard/tree/itsyouonline-auth">Github</a></li>
-
-                    <!--login button-->
-                    {% if userInfo %}
-                        <li class="dropdown">
-                            <a class="dropdown-toggle" data-toggle="dropdown" role="button">
-                                <span class="glyphicon glyphicon-user"></span>
-                                {{userInfo.username}}
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li>
-                                    <a href="/logout"><span class="glyphicon glyphicon-log-out"></span>Logout</a>
-                                </li>
-                            </ul>
-                        </li>
-                    {% else %}
-                        <li>
-                            <a href="/auth">
-                                <span class="glyphicon glyphicon-lock"></span>Login
-                            </a>
-                        </li>
-                    {% endif %}
                 </ul>             
             </div>
             <div id="update-loader" class="bars-container">

@@ -13,9 +13,6 @@ help() {
         options:
         --host : the hostname to listen on, default 127.0.0.1
         --port : the port of the webserver, default 5000
-        --clientid : itsyouonline organization client id
-        --clientsecret : itsyouonline organization client secret
-        --callbackurl : {{http or https}}://{{host}}:{{port}}/callback
     stop   :    stop the server.
     update :    update software.
     "
@@ -64,9 +61,6 @@ elif [ ${command} == 'start' ]; then
         case "$1" in
             -h | --host ) host="$2"; shift 2;;
             -p | --port ) port="$2"; shift 2;;
-            -i | --clientid ) clientid="$2"; shift 2;;
-            -s | --clientsecret ) clientsecret="$2"; shift 2;;
-            -c | --callbackurl ) callbackurl="$2"; shift 2;;
             -- ) shift; break ;;
             -* ) echo "Unrecognized option $1"; exit 1;;
             * ) break;;

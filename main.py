@@ -5,24 +5,15 @@ from lib.tools import Tools
 from lib.dashboard import Dashboard
 from lib.repositories import Repositories
 from lib.clients.travis import Travis
-from lib.authenticator import Authenticator
-from lib.http import HttpStatus
 
 app = Flask(__name__)
 app.secret_key = uuid.uuid4().hex
 tools = Tools()
-httpStatus = HttpStatus()
-
-client_id = os.environ['clientid']
-client_secret = os.environ['clientsecret']
-callback_url = os.environ['callbackurl']
-auth = Authenticator(client_id, client_secret, callback_url)
 
 @app.context_processor
 def context_processor():
-    userInfo = auth.is_authorized_user()
     config = tools.read_config(protected=True)
-    return dict(userInfo=userInfo, config=config)
+    return dict(config=config)
 
 @app.route("/")
 @app.route("/dashboard")
@@ -30,7 +21,6 @@ def dashboard():
     return render_template("dashboard.html")
 
 @app.route("/dashboard", methods=["POST"])
-@auth.required_member_of_org
 def build_actions():
     slug = request.form.get('repo')
     if 'trigger-build' in request.form:
@@ -56,7 +46,6 @@ def fetch_dashboard():
     return Response(html, headers=headers)
 
 @app.route("/dashboard/modal")
-@auth.required_member_of_org
 def repo_modal():
     slug = request.args.get('slug')
     repo = Repositories().repo(slug)
@@ -69,7 +58,6 @@ def repo_modal():
     return html
 
 @app.route("/settings", methods=['GET', 'POST'])
-@auth.required_member_of_org
 def settings():
     success = None
     if request.method == 'POST':    
@@ -96,32 +84,6 @@ def settings():
     repos = Repositories().list()
     return render_template('settings.html', repos=repos, success=success) 
 
-@app.route("/login")
-def itsyouonline_login():
-    return render_template('login.html') 
-
-@app.route("/auth")
-def itsyouonline_auth():
-    return auth.itsyouonline_auth()
-
-@app.route("/callback")
-def itsyouonline_callback():
-    code = request.args.get('code') 
-    state = request.args.get('state')
-    if not code or state != auth.state:
-        return httpStatus.BadRequest()
-
-    auth.authorize_user(code, state)
-    return redirect(url_for('dashboard'), code=302)
-
-@app.route("/logout")
-def logout():
-    session.clear()
-    return redirect(url_for("dashboard"))
-
-@app.route("/access_denied")
-def access_denied():
-    return render_template('access_denied.html')
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()

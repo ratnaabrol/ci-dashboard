@@ -1,4 +1,4 @@
-branch=${1:-itsyouonline-auth}
+branch=${1:-master}
 path=${2:-/opt}
 
 export LC_ALL=en_US.UTF-8
