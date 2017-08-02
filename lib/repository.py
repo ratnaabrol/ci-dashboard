@@ -17,14 +17,24 @@ class Repository(Clients):
         }
         return info
         
-    def last_build(self, **params):
-        params['limit'] = 1
-        builds = self._Clients__travis_client.builds(self.slug_encoded, **params).json()['builds']
-        if builds:
-            return self.__buildParser(builds[0])
+    def last_build(self, default_branch=False, **params):
+        if default_branch:
+            params['include'] = 'repository.default_branch,branch.last_build,build.commit'
+            repo = self._Clients__travis_client.repo(self.slug_encoded, **params).json()
+            default_branch = repo['default_branch']
+            last_build = default_branch['last_build']
+            if last_build:
+                return self.__buildParser(last_build)
+            else:
+                return []
         else:
-            return []
-        
+            params['limit'] = 1
+            builds = self._Clients__travis_client.builds(self.slug_encoded, **params).json()['builds']
+            if builds:
+                return self.__buildParser(builds[0])
+            else:
+                return []
+            
     def branches(self):
         try:
             response = self._Clients__github_client.branches(self.slug)
@@ -51,7 +61,7 @@ class Repository(Clients):
             "number": build['number'],
             "state": build['state'].upper(),
             "url": build_url.format(id=build['id']),
-            "branch": build['branch']['name'],
+            "branch": build['branch']['@href'].split('/')[-1],
             "commit_sha": build['commit']['sha'][:7],
             "commit_author": build['commit']['author']['name'],
             "commit_url": commit_url.format(sha=build['commit']['sha'])

@@ -9,7 +9,8 @@ function dashboardService() {
     service = this;
     service.timer = null;
     service.currentPage = 1;
-    service.eventType = null;
+    service.events = null;
+    service.default_branch = false;
     service.viewMode = viewMode;
     service.interval = interval;
     service.requestData = Object();
@@ -38,8 +39,12 @@ function dashboardService() {
             service.requestData.page = service.currentPage;
         }
 
-        if(service.eventType) {
-            service.requestData.event_type = service.eventType;
+        if(service.events) {
+            service.requestData.event_type = service.events;
+        }
+
+        if(service.default_branch) {
+            service.requestData.default_branch = service.default_branch;
         }
         
         xhr = $.ajax({
@@ -71,7 +76,8 @@ function dashboardService() {
     }
 }
 
-$(document).ready(function(){  
+$(document).ready(function(){
+    
     //show modal  
     $("#modal").on("shown.bs.modal", function (e) {
         _dashboardService.stop();
@@ -87,6 +93,7 @@ $(document).ready(function(){
             }
         });      
     });
+
     //hide modal
     $("#modal").on("hidden.bs.modal", function(event){
         $('.modal-content').html('<div class="modal-loading">Loading...</div>');
@@ -94,17 +101,28 @@ $(document).ready(function(){
     });
 
     //event filter
-    $('#eventFilter li').on('click', function() {
-        var event = $(this).attr('event');
-        if(event == 'all') {
-            $("#filterLabel").html('Events');
-            _dashboardService.eventType = null;
-        }
-        else {
-             $("#filterLabel").html("Events : " + $(this).text());
-            _dashboardService.eventType = event;
-        }
+    $("input[name=events]").on("change", function() { 
+        var events = [];
+        $('input[name=events]:checked').each(function() {
+            events.push($(this).val());
+        });
+
         _dashboardService.reset();
-        _dashboardService.updateDashboard();
+        _dashboardService.events = events.toString();
+        _dashboardService.updateDashboard();       
     });
+
+    //default branch filter
+    $("input[name=default_branch]").on("change", function() { 
+        var default_branch = $(this);
+        $('input[name=events]').each(function() {
+            $(this).attr('disabled', default_branch.prop("checked"));
+            $(this).attr('checked', false);
+        });
+
+        _dashboardService.reset();
+        _dashboardService.default_branch = $(this).is(":checked")
+        _dashboardService.updateDashboard();       
+    });
+    
 });

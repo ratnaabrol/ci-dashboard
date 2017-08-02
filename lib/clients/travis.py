@@ -27,9 +27,9 @@ class Travis:
         response = self.call_api(url)
         return response
         
-    def repo(self, slug):
+    def repo(self, slug, **params):
         url = '/repo/' + slug
-        response = self.call_api(url)
+        response = self.call_api(url, params=params)
         return response
 
     def repos(self, **params):

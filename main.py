@@ -1,34 +1,41 @@
-from flask import Flask, request, redirect, render_template, url_for, Response
-import argparse, json
+from flask import Flask, request, redirect, render_template, url_for, Response, session
+import argparse, json, requests, os, uuid
+from datetime import timedelta
 from lib.tools import Tools
 from lib.dashboard import Dashboard
 from lib.repositories import Repositories
 from lib.clients.travis import Travis
 
 app = Flask(__name__)
+app.secret_key = uuid.uuid4().hex
 tools = Tools()
 
+@app.context_processor
+def context_processor():
+    config = tools.read_config(protected=True)
+    return dict(config=config)
+
 @app.route("/")
-@app.route("/dashboard", methods=["GET", "POST"])
+@app.route("/dashboard")
 def dashboard():
-    if request.method == 'GET':
-        return render_template("dashboard.html", config=tools.read_config())
+    return render_template("dashboard.html")
 
-    elif request.method == 'POST':
-        slug = request.form.get('repo')
-        if 'trigger-build' in request.form:
-            branch = request.form.get('branch')
-            Repositories().repo(slug).trigger_build(branch)
+@app.route("/dashboard", methods=["POST"])
+def build_actions():
+    slug = request.form.get('repo')
+    if 'trigger-build' in request.form:
+        branch = request.form.get('branch')
+        Repositories().repo(slug).trigger_build(branch)
 
-        elif 'restart-build' in request.form:
-            buildid = request.form.get('buildid')
-            Repositories().repo(slug).restart_build(buildid)
-        
-        elif 'cancel-build' in request.form:
-            buildid = request.form.get('buildid')
-            Repositories().repo(slug).cancel_build(buildid)
+    elif 'restart-build' in request.form:
+        buildid = request.form.get('buildid')
+        Repositories().repo(slug).restart_build(buildid)
+    
+    elif 'cancel-build' in request.form:
+        buildid = request.form.get('buildid')
+        Repositories().repo(slug).cancel_build(buildid)
 
-        return redirect(url_for('dashboard'), code=302)
+    return redirect(url_for('dashboard'), code=302)
 
 
 @app.route("/dashboard/fetch")
@@ -75,9 +82,9 @@ def settings():
         success = True
 
     repos = Repositories().list()
-    config = tools.read_config(protected=True)
-    return render_template('settings.html', repos=repos, config=config, success=success) 
-     
+    return render_template('settings.html', repos=repos, success=success) 
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--host", type=str, default='127.0.0.1', help="the hostname to listen on")

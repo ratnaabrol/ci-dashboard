@@ -11,26 +11,30 @@ curl -sL https://raw.github.com/ahmedelsayed-93/ci-dashboard/master/scripts/inst
 
 #### Start server
 ```bash
-cidashboard start --host {{host}} --port {{port}}
+cidashboard start [arguments]
+Arguments
+    --host          :   the hostname to listen on, default 127.0.0.1
+    --port          :   the port of the webserver, default 5000
 ```
+
 > CI-Dashboard server will be started in a new tmux session named [cidashboard].
 
 #### Set your configration
 
-- Go to **Settings** page ```http:/{host}:{port}/settings```, and set the following parameters :
+- Go to **Settings** page ```http://{host}:{port}/settings```, and set the following parameters :
 
     - ```Travis token```: your travis token. [need help?](https://docs.travis-ci.com/api/#authentication)
 
     - ```Github token```: your github account token. [need help?](https://github.com/settings/tokens)
         > Optional. you will need it in case you want to trigger new builds from the dashboard.
 
-    - ```interval ```  : update interval in millisecond.
+    - ```Interval ```  : update interval in millisecond.
 
     - ```Grid size```  : number of columns and rows to be shown in the dashboard.
     
     - ```View mode```  : **onepage** or **slideshow**.
 
-    - ```threads```    : number of threads to fetch repositories info in the same time.
+    - ```Threads```    : number of threads to fetch repositories info in the same time.
 
 
 #### Open dashboard 

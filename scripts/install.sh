@@ -1,6 +1,10 @@
 branch=${1:-master}
 path=${2:-/opt}
 
+export LC_ALL=en_US.UTF-8
+export LANG=en_US.UTF-8
+export LANGUAGE=en_US.UTF-8
+
 echo "Installing dependencies..."
 apt update
 apt install git -y
@@ -21,6 +25,6 @@ cp ${path}/ci-dashboard/scripts/cidashboard.sh /usr/bin/cidashboard
 chmod +x /usr/bin/cidashboard
 echo ${path} > /etc/ci-dashboard.config 
 
-echo "Done, for help type : 'cidashboard help in terminal'"
+echo "Done, for help type : 'cidashboard help'"
 
 
