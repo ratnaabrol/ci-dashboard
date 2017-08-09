@@ -48,6 +48,11 @@ class Travis:
         response = self.call_api(url, params=params)
         return response
 
+    def env_vars(self, slug, **params):
+        url = '/repo/' + slug + '/env_vars'
+        response = self.call_api(url, params=params)
+        return response
+
     def trigger_build(self, slug, data):
         url = '/repo/' + slug + '/requests'
         response = self.call_api(url, method='post', data=data)
