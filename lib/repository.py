@@ -43,8 +43,12 @@ class Repository(Clients):
             branches = []
         return branches
 
-    def trigger_build(self, branch):
-        data = {"request": {"branch": branch}}
+    def env_vars(self):
+        env_vars = self._Clients__travis_client.env_vars(self.slug_encoded).json()['env_vars']
+        return env_vars
+
+    def trigger_build(self, branch, env_vars):
+        data = {"request": {"branch": branch, "config": {"env": env_vars}}}
         self._Clients__travis_client.trigger_build(self.slug_encoded, data)
     
     def restart_build(self, buildid):

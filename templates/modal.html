@@ -4,35 +4,51 @@
 </div>
 <div class="modal-body">
     {% if repo.branches %}
-        <form class="form-inline" action="/dashboard" method="post">
-            <h5><strong>Trigger new build</strong></h5>
-            <div class="form-group" style="width:70%;">
+        <form class="form" action="/dashboard" method="post">
+            <h5><strong>Branch</strong></h5>
+            <div class="form-group">
                 <select class="form-control" name="branch" style="width:100%;">
                     {% for branch in repo.branches %}
                         <option>{{branch}}</option>
                     {% endfor %}
                 </select>
             </div>
+
+            <div class="form-group">
+                <a class="env-vars-button" data-toggle="collapse" data-target="#env_vars">Edit Environment variables</a><br>
+                <div id="env_vars" class="collapse" style="padding:15px; margin-top:5px; background:#F2F3F4; border:1px solid #CACFD2; border-radius:5px; width:100%">
+                    {% if repo.env_vars %}
+                        {% for var in repo.env_vars %}
+                            <div class="form-group">
+                                {% if var.public %}
+                                    <label for="{{var.name}}">{{var.name}}</label>
+                                    <input type="text" class="form-control" name="env_var@{{var.name}}" value="{{var.value}}" required>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+
             <input type='hidden' name='repo' value="{{repo.info.slug}}"/>
             <button type="submit" name="trigger-build" class="btn btn-success" style="width:20%;">Trigger</button>
         </form>
-    {% endif %}
-
-    {% if repo.last_build %}
-    <form class="form" action="/dashboard" method="post">
-        <input type='hidden' name='repo' value="{{repo.info.slug}}"/>
-        <input type='hidden' name='buildid' value="{{repo.last_build.id}}"/>
-        {% if repo.last_build.state.lower() in ['created', 'started'] %}
-            <button type="submit" name="cancel-build" class="btn btn-danger">Cancel build #{{repo.last_build.number}}</button>
-        {% elif repo.last_build.state.lower() in ['failed', 'passed', 'errored', 'canceled'] %}
-            <button type="submit" name="restart-build" class="btn btn-primary">Restart build #{{repo.last_build.number}}</button>
-        {% endif %}
-    </form>
     {% endif %}
 
     {% if not repo.branches and not repo.last_build %}
         Nothing to do
     {% endif %}
 
+    <!--{% if repo.last_build %}
+        <form class="form" action="/dashboard" method="post">
+            <input type='hidden' name='repo' value="{{repo.info.slug}}"/>
+            <input type='hidden' name='buildid' value="{{repo.last_build.id}}"/>
+            {% if repo.last_build.state.lower() in ['created', 'started'] %}
+                <button type="submit" name="cancel-build" class="btn btn-danger">Cancel build #{{repo.last_build.number}}</button>
+            {% elif repo.last_build.state.lower() in ['failed', 'passed', 'errored', 'canceled'] %}
+                <button type="submit" name="restart-build" class="btn btn-primary">Restart build #{{repo.last_build.number}}</button>
+            {% endif %}
+        </form>
+    {% endif %}-->
 
 </div>

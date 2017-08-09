@@ -35,7 +35,13 @@ def build_actions():
     slug = request.form.get('repo')
     if 'trigger-build' in request.form:
         branch = request.form.get('branch')
-        Repositories().repo(slug).trigger_build(branch)
+        env_vars = {}
+        for key, value in request.form.items():
+            if 'env_var@' in key:
+                key = key.split('@')[-1]
+                env_vars[key] = value
+
+        Repositories().repo(slug).trigger_build(branch, env_vars)
 
     elif 'restart-build' in request.form:
         buildid = request.form.get('buildid')
@@ -63,7 +69,8 @@ def repo_modal():
     repo = {
         "info": repo.info(),  
         "branches":repo.branches(),
-        "last_build": repo.last_build()
+        "last_build": repo.last_build(),
+        "env_vars": repo.env_vars()
     }
     html = render_template("modal.html", repo=repo)
     return html
