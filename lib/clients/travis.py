@@ -41,6 +41,11 @@ class Travis:
         url = '/repo/' + slug + '/branches'
         response = self.call_api(url, params=params)
         return response
+
+    def env_vars(self, slug, **params):
+        url = '/repo/' + slug + '/env_vars'
+        response = self.call_api(url, params=params)
+        return response
     
     def builds(self, slug, **params):
         url = '/repo/' + slug + '/builds'

@@ -52,7 +52,8 @@ def repo_modal():
     repo = {
         "info": repo.info(),  
         "branches":repo.branches(),
-        "last_build": repo.last_build()
+        "last_build": repo.last_build(),
+        "env_vars": repo.env_vars()
     }
     html = render_template("modal.html", repo=repo)
     return html
