@@ -1,7 +1,8 @@
 import requests
 
+
 class Travis:
-    def __init__(self, travis_token):
+    def __init__(self, travis_token, travis_for="open-source"):
         self.session = requests.Session()
         self.session.headers = {
             'Accept':'application/vnd.travis-ci.2+json',
@@ -10,10 +11,14 @@ class Travis:
             'Travis-API-Version':'3',
             'Authorization':'token {}'.format(travis_token)
         }
-        self.base_url = 'https://api.travis-ci.org'
-        
+        self.base_url_template = 'https://{}travis-ci.org'
+        if travis_for == "private-projects":
+            self.base_url_template = "https://{}travis-ci.com"
+        self.api_url = self.base_url_template.format("api.")
+        self.repo_url_template = "{}/{{slug}}".format(self.base_url_template.format(""))
+
     def call_api(self, url, method='get', data=None, params=None):
-        url = self.base_url + url
+        url = self.api_url + url
         if method == 'get':
             response = self.session.get(url, params=params)
         elif method == 'post':
@@ -26,7 +31,7 @@ class Travis:
         url = '/user'
         response = self.call_api(url)
         return response
-        
+
     def repo(self, slug, **params):
         url = '/repo/' + slug
         response = self.call_api(url, params=params)
@@ -46,7 +51,7 @@ class Travis:
         url = '/repo/' + slug + '/env_vars'
         response = self.call_api(url, params=params)
         return response
-    
+
     def builds(self, slug, **params):
         url = '/repo/' + slug + '/builds'
         params['include'] = 'build.commit'
@@ -67,3 +72,6 @@ class Travis:
         url = '/build/' + str(buildid) + '/cancel'
         response = self.call_api(url, method='post')
         return response
+
+    def get_repo_url(self, slug):
+        return self.repo_url_template.format(slug=slug)

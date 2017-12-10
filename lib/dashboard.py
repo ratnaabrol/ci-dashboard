@@ -3,6 +3,7 @@ from threading import Thread
 from lib.tools import Tools
 from lib.repositories import Repositories
 
+
 class Dashboard:
     def __init__(self):
         self.__tools = Tools()
@@ -22,16 +23,16 @@ class Dashboard:
             if kwargs:
                 all_repos = self.fetch_builds(** kwargs)
                 all_repos = [repo for repo in all_repos if repo['last_build']]
-                number_of_repos = len(all_repos)  
-                end = min(end, number_of_repos)       
-                repos = all_repos[start:end]         
+                number_of_repos = len(all_repos)
+                end = min(end, number_of_repos)
+                repos = all_repos[start:end]
             else:
                 number_of_repos = len(self.repos)
                 end = min(end, number_of_repos)
                 repos = self.fetch_builds(start=start, end=end)
 
             if end >= number_of_repos:
-                last_page = True 
+                last_page = True
 
             pages = math.ceil(number_of_repos / self.repos_per_page)
             headers = {'pages': pages, 'last_page': last_page}
@@ -41,18 +42,18 @@ class Dashboard:
             repos = self.fetch_builds(**kwargs)
             if kwargs:
                 repos = [repo for repo in repos if repo['last_build']]
-                
+
             headers = {}
             return headers, repos
-            
 
-    def fetch_builds(self, start=0, end=-1, **kwargs):
+
+    def fetch_builds(self, start=0, end=None, **kwargs):
         self.__dashboard_data = []
         self.__repos_queue = queue.Queue()
 
         for repo in self.repos[start:end]:
             self.__repos_queue.put(repo)
-             
+
         self.__start_job(job=self.__collect_data, kwargs=kwargs)
         sorted_data = sorted(self.__dashboard_data, key=lambda k: k['info']['slug'])
         return sorted_data
@@ -61,8 +62,8 @@ class Dashboard:
     def __collect_data(self, **kwargs):
         while not self.__repos_queue.empty():
             slug = self.__repos_queue.get()
-            repo = Repositories().repo(slug)
-            data = { 'info': repo.info(), 'last_build':repo.last_build(**kwargs)}   
+            repo = Repositories(self.__config["sticky_branch"]).repo(slug)
+            data = { 'info': repo.info(), 'last_build':repo.last_build(**kwargs)}
             self.__dashboard_data.append(data)
 
 
@@ -75,4 +76,3 @@ class Dashboard:
 
         for thread in threads_list:
             thread.join()
-            

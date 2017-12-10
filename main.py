@@ -1,14 +1,13 @@
-from flask import Flask, request, redirect, render_template, url_for, Response, session
-import argparse, json, requests, os, uuid
-from datetime import timedelta
+from flask import Flask, request, redirect, render_template, url_for, Response
+import argparse, uuid
 from lib.tools import Tools
 from lib.dashboard import Dashboard
 from lib.repositories import Repositories
-from lib.clients.travis import Travis
 
 app = Flask(__name__)
 app.secret_key = uuid.uuid4().hex
 tools = Tools()
+repositories = Repositories(sticky_branch=None)
 
 @app.context_processor
 def context_processor():
@@ -25,21 +24,21 @@ def build_actions():
     slug = request.form.get('repo')
     if 'trigger-build' in request.form:
         branch = request.form.get('branch')
-        Repositories().repo(slug).trigger_build(branch)
+        repositories.repo(slug).trigger_build(branch)
 
     elif 'restart-build' in request.form:
         buildid = request.form.get('buildid')
-        Repositories().repo(slug).restart_build(buildid)
-    
+        repositories.repo(slug).restart_build(buildid)
+
     elif 'cancel-build' in request.form:
         buildid = request.form.get('buildid')
-        Repositories().repo(slug).cancel_build(buildid)
+        repositories.repo(slug).cancel_build(buildid)
 
     return redirect(url_for('dashboard'), code=302)
 
 
 @app.route("/dashboard/fetch")
-def fetch_dashboard(): 
+def fetch_dashboard():
     params = request.args.to_dict()
     headers, repos = Dashboard().fetch(** params)
     html = render_template("repos.html", repos=repos)
@@ -48,9 +47,9 @@ def fetch_dashboard():
 @app.route("/dashboard/modal")
 def repo_modal():
     slug = request.args.get('slug')
-    repo = Repositories().repo(slug)
+    repo = repositories.repo(slug)
     repo = {
-        "info": repo.info(),  
+        "info": repo.info(),
         "branches":repo.branches(),
         "last_build": repo.last_build(),
         "env_vars": repo.env_vars()
@@ -61,20 +60,24 @@ def repo_modal():
 @app.route("/settings", methods=['GET', 'POST'])
 def settings():
     success = None
-    if request.method == 'POST':    
-        if 'configration' in request.form:  
+    if request.method == 'POST':
+        if 'configration' in request.form:
+            travis_for = request.form.get('travis_for')
             travis_token = request.form.get('travis_token')
             github_token = request.form.get('github_token')
             threads = int(request.form.get('threads'))
             grid_size = int(request.form.get('grid_size'))
             interval = int(request.form.get('interval'))
             view_mode = request.form.get('view_mode')
-            tools.save_config(threads=threads, 
-                              grid_size=grid_size, 
-                              interval=interval, 
-                              travis_token=travis_token, 
+            sticky_branch = request.form.get('sticky_branch')
+            tools.save_config(travis_for=travis_for,
+                              threads=threads,
+                              grid_size=grid_size,
+                              interval=interval,
+                              travis_token=travis_token,
                               github_token=github_token,
-                              view_mode=view_mode)
+                              view_mode=view_mode,
+                              sticky_branch=sticky_branch)
 
         elif 'repositories' in request.form:
             selected_repos = request.form.getlist("repos")
@@ -82,8 +85,8 @@ def settings():
 
         success = True
 
-    repos = Repositories().list()
-    return render_template('settings.html', repos=repos, success=success) 
+    repos = repositories.list()
+    return render_template('settings.html', repos=repos, success=success)
 
 
 if __name__ == "__main__":
