@@ -22,6 +22,23 @@
 
         <h2>Settings</h2><br>
         <form method="post" action="/settings">
+            <div class="form-group row">
+              <div class="col-xs-3">
+                  <label for="travis_for">Travis CI for </label>
+                  <select class="form-control" name="travis_for" value="{{config.travis_for}}" placeholder="Travis token" required>
+                    <option value="open-source"
+                    {% if not config.travis_for or config.travis_for == "open-source" %}
+                      selected="true"
+                    {% endif %}
+                    >Open Source</option>
+                    <option value="private-projects"
+                    {% if config.travis_for == "private-projects" %}
+                      selected="true"
+                    {% endif %}
+                    >Private Projects</option>
+                  </select>
+              </div>
+            </div>
             <div class="form-group">
                 <label for="travis_token">Travis token</label>
                 <input type="text" class="form-control" name="travis_token" value="{{config.travis_token}}" placeholder="Travis token" required>
@@ -50,6 +67,12 @@
                     <label for="threads">Threads</label>
                     <input type="number" class="form-control" name="threads" value="{{config.threads}}">
                 </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-xs-3">
+                <label for="sticky_branch">Sticky branch</label>
+                <input type="text" class="form-control" name="sticky_branch" value="{{config.sticky_branch}}" placeholder="Sticky branch (Optional)">
+              </div>
             </div>
             <div class="form-group row">
                 <div class="col-xs-3">

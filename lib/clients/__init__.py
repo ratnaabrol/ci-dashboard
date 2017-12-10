@@ -8,5 +8,5 @@ class Clients:
         self.__config = self.__tools.read_config()
         self.__travis_token = self.__config['travis_token']
         self.__github_token = self.__config['github_token']
-        self.__travis_client = Travis(self.__travis_token)
+        self.__travis_client = Travis(self.__travis_token, self.__config['travis_for'])
         self.__github_client = Github(self.__github_token)

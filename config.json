@@ -3,7 +3,9 @@
     "grid_size": 3,
     "interval": 10000,
     "repos": [],
+    "sticky_branch": "",
     "threads": 20,
+    "travis_for": "open-source",
     "travis_token": "",
     "view_mode": "onepage"
 }
