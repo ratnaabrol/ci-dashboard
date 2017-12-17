@@ -29,10 +29,11 @@ class Repository(Clients):
         return []
 
     def _last_build_on_sticky_branch(self, **params):
+        params["branch.name"] = self.sticky_branch
+        params["sort_by"] = "id:desc"
         builds = self._Clients__travis_client.builds(self.slug_encoded, **params).json()['builds']
-        build = [b for b in builds if b["branch"]["name"] == self.sticky_branch]
-        if len(build) > 0:
-            return self.__buildParser(build[0])
+        if len(builds) > 0:
+            return self.__buildParser(builds[0])
         return[]
 
     def last_build(self, default_branch=False, **params):
